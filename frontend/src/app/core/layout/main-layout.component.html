@@ -1,0 +1,68 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidenav pour Desktop & Tablette -->
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="isHandset() ? 'dialog' : 'navigation'"
+      [mode]="isHandset() ? 'over' : 'side'"
+      [opened]="!isHandset()">
+    <div class="logo-container">
+      <mat-icon class="logo-icon">eco</mat-icon>
+      <span class="logo-text">OptiMiam</span>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let item of navItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="active-nav-item"
+         (click)="onNavItemClick(drawer)">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Contenu Principal -->
+  <mat-sidenav-content class="content-container">
+    <mat-toolbar color="primary" class="main-toolbar">
+      <button
+        type="button"
+        aria-label="Basculer le menu"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset()">
+        <mat-icon aria-label="Menu latéral">menu</mat-icon>
+      </button>
+      <span class="app-title">OptiMiam</span>
+      <span class="spacer"></span>
+      <button mat-icon-button aria-label="Notifications">
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="Profil utilisateur">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Bottom Navigation Bar pour Mobile -->
+    <nav class="mobile-bottom-nav" *ngIf="isHandset()">
+      <a routerLink="/dashboard" routerLinkActive="active-mobile-link" class="mobile-nav-item">
+        <mat-icon>dashboard</mat-icon>
+        <span>Accueil</span>
+      </a>
+      <a routerLink="/stock" routerLinkActive="active-mobile-link" class="mobile-nav-item">
+        <mat-icon>kitchen</mat-icon>
+        <span>Stock</span>
+      </a>
+      <a routerLink="/recipes" routerLinkActive="active-mobile-link" class="mobile-nav-item">
+        <mat-icon>menu_book</mat-icon>
+        <span>Recettes</span>
+      </a>
+      <a routerLink="/shopping" routerLinkActive="active-mobile-link" class="mobile-nav-item">
+        <mat-icon>shopping_cart</mat-icon>
+        <span>Courses</span>
+      </a>
+    </nav>
+  </mat-sidenav-content>
+</mat-sidenav-container>

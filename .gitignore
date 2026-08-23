@@ -1,0 +1,22 @@
+# IDE & Editor files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.DS_Store
+
+# Java / Maven
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.log
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+
+# OS / Docker
+.DS_Store
+postgres_data/
