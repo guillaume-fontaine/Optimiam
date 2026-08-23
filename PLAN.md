@@ -162,30 +162,30 @@ gantt
 
 **Objectif :** Implémenter le moteur de scoring déterministe et explicable pour suggérer les meilleures recettes selon le stock et les péremptions, et alimenter le Dashboard.
 
-- [ ] **4.1 Backend — Moteur de Recommandation V1 (`com.project.nut.recommendation`)**
-  - [ ] **Domain & Scoring Strategy :**
-    - [ ] Interface `RecommendationStrategy` (préparation pour le futur module ILP V2).
-    - [ ] Implémentation `DeterministicScoringStrategy` :
-      - [ ] `StockScore` (% d'ingrédients disponibles en stock).
-      - [ ] `ExpirationScore` (bonus pour l'utilisation de produits proches de la DLC).
-      - [ ] `PreferenceScore` (temps max, difficulté préférée, catégories favorites).
-      - [ ] `NutritionScore` & `ComplexityScore`.
-      - [ ] Formule de score pondéré configurable.
-    - [ ] Modèle d'explicabilité : liste des raisons (`EXPIRING_PRODUCTS`, `STOCK_MATCH_90%`, `FAST_RECIPE`, etc.).
-  - [ ] **API :**
-    - [ ] `RecommendationController` (`POST /api/v1/recommendations`, `POST /api/v1/recommendations/preview`).
-  - [ ] **Tests :**
-    - [ ] Tests unitaires approfondis avec jeux de données de stock et dates variables.
-    - [ ] Vérification du déterminisme des scores et de la pertinence des explications fournies.
+- [x] **4.1 Backend — Moteur de Recommandation V1 (`com.project.nut.recommendation`)**
+  - [x] **Domain & Scoring Strategy :**
+    - [x] Interface `RecommendationStrategy` (préparation pour le futur module ILP V2).
+    - [x] Implémentation `DeterministicScoringStrategy` :
+      - [x] `StockScore` (% d'ingrédients disponibles en stock).
+      - [x] `ExpirationScore` (bonus pour l'utilisation de produits proches de la DLC).
+      - [x] `PreferenceScore` (temps max, difficulté préférée, catégories favorites).
+      - [x] `NutritionScore` & `ComplexityScore`.
+      - [x] Formule de score pondéré configurable.
+    - [x] Modèle d'explicabilité : liste des raisons (`EXPIRING_PRODUCTS`, `STOCK_MATCH_90%`, `FAST_RECIPE`, etc.).
+  - [x] **API :**
+    - [x] `RecommendationController` (`POST /api/v1/recommendations`, `GET /api/v1/recommendations/daily`).
+  - [x] **Tests :**
+    - [x] Tests unitaires approfondis avec jeux de données de stock et dates variables.
+    - [x] Vérification du déterminisme des scores et de la pertinence des explications fournies.
 
-- [ ] **4.2 Frontend — Dashboard & Recommandations (`features/dashboard`, `features/recommendations`)**
-  - [ ] Dashboard principal V1 :
-    - [ ] Compteurs KPI : Total produits en stock, Produits à consommer d'urgence, Pertes évitées / enregistrées.
-    - [ ] Widget "🔴 À cuisiner en priorité" (produits proches de péremption).
-    - [ ] Widget "⭐ Recettes recommandées du jour" avec score (%) et badges explicatifs ("Utilise 3 produits à péremption").
-    - [ ] Raccourcis d'actions rapides ("Ajouter au stock", "Planifier ce repas").
-  - [ ] Page dédiée Recommandations avec curseurs de préférences en direct.
-  - [ ] Tests des composants.
+- [x] **4.2 Frontend — Dashboard & Recommandations (`features/dashboard`, `features/recommendations`)**
+  - [x] Dashboard principal V1 :
+    - [x] Compteurs KPI : Total produits en stock, Produits à consommer d'urgence, Pertes évitées / enregistrées.
+    - [x] Widget "🔴 À cuisiner en priorité" (produits proches de péremption).
+    - [x] Widget "⭐ Recettes recommandées du jour" avec score (%) et badges explicatifs ("Utilise 3 produits à péremption").
+    - [x] Raccourcis d'actions rapides ("Ajouter au stock", "Planifier ce repas").
+  - [x] Page dédiée Recommandations avec curseurs de préférences en direct.
+  - [x] Tests des composants.
 
 ---
 
@@ -335,7 +335,7 @@ gantt
 | **1. Produits & Catégories** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **2. Stocks, Mouvements & Pertes** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **3. Recettes & Nutrition** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **4. Moteur Recommandation & Dashboard** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **4. Moteur Recommandation & Dashboard** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **5. Planning des Repas** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **6. Courses & Consommation** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **7. PWA & Synchronisation Offline** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |

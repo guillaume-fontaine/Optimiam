@@ -1,0 +1,159 @@
+<div class="rec-header">
+  <div>
+    <h1 class="page-title">Moteur de Suggestions Anti-Gaspi 🌱</h1>
+    <p class="page-subtitle">Suggestions de recettes classées par priorité de consommation et disponibilité de vos stocks.</p>
+  </div>
+</div>
+
+<!-- Filtres de Recommandation -->
+<mat-card class="filter-card">
+  <form [formGroup]="filterForm" class="filter-form">
+    <div class="filters-row">
+      <mat-form-field appearance="outline" class="small-field">
+        <mat-label>Portions</mat-label>
+        <input matInput type="number" formControlName="servings" placeholder="Ex: 4" min="1" />
+      </mat-form-field>
+
+      <div class="time-buttons-group">
+        <span class="btn-group-label">Temps max :</span>
+        <button type="button" mat-stroked-button 
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === null" 
+          (click)="onMaxTimeSelect(null)">Tous</button>
+        <button type="button" mat-stroked-button 
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 15" 
+          (click)="onMaxTimeSelect(15)">≤ 15 min</button>
+        <button type="button" mat-stroked-button 
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 30" 
+          (click)="onMaxTimeSelect(30)">≤ 30 min</button>
+        <button type="button" mat-stroked-button 
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 45" 
+          (click)="onMaxTimeSelect(45)">≤ 45 min</button>
+      </div>
+
+      <mat-form-field appearance="outline" class="diff-field">
+        <mat-label>Difficulté</mat-label>
+        <mat-select formControlName="difficulty">
+          <mat-option [value]="null">Toutes</mat-option>
+          <mat-option *ngFor="let d of difficultyOptions" [value]="d.value">{{ d.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="filter-bottom-row">
+      <div class="tags-chips">
+        <span class="tags-label">Thématiques :</span>
+        <mat-chip-listbox>
+          <mat-chip-option 
+            *ngFor="let tag of popularTags" 
+            [selected]="filterForm.get('tag')?.value === tag" 
+            (selectionChange)="onTagToggle(tag)">
+            {{ tag }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+
+      <mat-slide-toggle formControlName="onlyFullStock" color="primary">
+        100% en stock uniquement
+      </mat-slide-toggle>
+    </div>
+  </form>
+</mat-card>
+
+<!-- Liste des Recettes Recommandées -->
+<div class="recommendations-container">
+  <app-loading-spinner *ngIf="isLoading" message="Calcul des meilleures recettes selon votre stock..."></app-loading-spinner>
+
+  <ng-container *ngIf="!isLoading">
+    <app-empty-state 
+      *ngIf="recommendations.length === 0"
+      icon="auto_awesome"
+      title="Aucune recette recommandée"
+      description="Aucune recette ne correspond aux critères sélectionnés ou votre stock est insuffisant.">
+      <button mat-raised-button color="primary" (click)="filterForm.reset()">
+        Réinitialiser les filtres
+      </button>
+    </app-empty-state>
+
+    <div class="recommendations-list" *ngIf="recommendations.length > 0">
+      <mat-card class="rec-card" *ngFor="let rec of recommendations; let idx = index" [class.best-match]="idx === 0">
+        <div class="rec-card-content">
+          <!-- Colonne Gauche : Rang & Score -->
+          <div class="rank-score-column">
+            <div class="rank-badge" [ngClass]="{'rank-gold': idx === 0, 'rank-silver': idx === 1, 'rank-bronze': idx === 2}">
+              <mat-icon *ngIf="idx === 0">emoji_events</mat-icon>
+              <span>#{{ idx + 1 }}</span>
+            </div>
+            <div class="score-indicator">
+              <span class="score-number">{{ rec.score }}</span>
+              <span class="score-label">pts anti-gaspi</span>
+            </div>
+          </div>
+
+          <!-- Colonne Centrale : Détails Recette & Explicabilité -->
+          <div class="rec-main-details">
+            <div class="rec-header-line">
+              <h2 class="recipe-name">{{ rec.recipe.name }}</h2>
+              <div class="recipe-badges">
+                <span class="meta-badge"><mat-icon>timer</mat-icon> {{ rec.recipe.totalTimeMinutes }} min</span>
+                <span class="meta-badge"><mat-icon>people</mat-icon> {{ rec.recipe.servings }} pers.</span>
+                <span class="meta-badge"><mat-icon>psychology</mat-icon> {{ rec.recipe.difficultyLabel }}</span>
+              </div>
+            </div>
+
+            <p class="recipe-desc" *ngIf="rec.recipe.description">{{ rec.recipe.description }}</p>
+
+            <!-- Alerte Anti-gaspi priorité DLC -->
+            <div class="urgency-alert-box" *ngIf="rec.expiringIngredientsUsed.length > 0">
+              <mat-icon color="warn">alarm</mat-icon>
+              <div class="alert-text">
+                <strong>Anti-Gaspi Prioritaire :</strong> Sauve {{ rec.expiringIngredientsUsed.length }} ingrédient(s) à consommer d'urgence !
+                <span class="expiring-list">({{ rec.expiringIngredientsUsed.join(', ') }})</span>
+              </div>
+            </div>
+
+            <!-- Barre de progression des stocks -->
+            <div class="stock-progress-section">
+              <div class="progress-labels">
+                <span class="stock-summary-text">
+                  <mat-icon class="check-icon" [color]="rec.fullyAvailableInStock ? 'primary' : 'warn'">
+                    {{ rec.fullyAvailableInStock ? 'check_circle' : 'info' }}
+                  </mat-icon>
+                  <strong>{{ rec.availableIngredientsCount }} / {{ rec.totalIngredientsCount }}</strong> ingrédients disponibles
+                </span>
+                <span class="match-pct" [class.text-green]="rec.matchPercentage === 100">{{ rec.matchPercentage }}% en stock</span>
+              </div>
+              <mat-progress-bar mode="determinate" [value]="rec.matchPercentage" [color]="rec.matchPercentage === 100 ? 'primary' : 'accent'"></mat-progress-bar>
+            </div>
+
+            <!-- Tags d'explicabilité -->
+            <div class="reasons-tags-row">
+              <span class="reason-tag" *ngFor="let reason of rec.reasons">
+                {{ reason }}
+              </span>
+            </div>
+
+            <!-- Ingrédients manquants si applicable -->
+            <div class="missing-ingredients-box" *ngIf="rec.missingIngredients.length > 0">
+              <span class="missing-title">À prévoir :</span>
+              <span class="missing-item" *ngFor="let missing of rec.missingIngredients">
+                {{ missing.product.name }} (manque {{ missing.missingQuantity }} {{ missing.unitSymbol }})
+              </span>
+            </div>
+          </div>
+
+          <!-- Colonne Droite : Actions -->
+          <div class="rec-actions-column">
+            <button mat-raised-button color="primary" class="main-action-btn" (click)="openDetailDialog(rec.recipe)">
+              <mat-icon>visibility</mat-icon>
+              Voir la recette
+            </button>
+            <button mat-stroked-button color="accent" (click)="cookRecipe(rec)">
+              <mat-icon>restaurant</mat-icon>
+              Cuisiner ce plat
+            </button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>

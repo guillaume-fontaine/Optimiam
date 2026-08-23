@@ -7,9 +7,12 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 
 import { StockItem, StockSummary } from '../../core/models/stock.model';
+import { Recommendation } from '../../core/models/recommendation.model';
 import { StockService } from '../../core/services/stock.service';
+import { RecommendationService } from '../../core/services/recommendation.service';
 import { StockEntryDialogComponent } from '../stock/stock-entry-dialog/stock-entry-dialog.component';
 import { StockExitDialogComponent } from '../stock/stock-exit-dialog/stock-exit-dialog.component';
+import { RecipeDetailDialogComponent } from '../recipes/recipe-detail-dialog/recipe-detail-dialog.component';
 import { LoadingSpinnerComponent } from '../../shared/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.component';
 
@@ -40,7 +43,7 @@ import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.com
       </div>
     </div>
 
-    <app-loading-spinner *ngIf="isLoading" message="Chargement des données..."></app-loading-spinner>
+    <app-loading-spinner *ngIf="isLoading" message="Chargement des données du dashboard..."></app-loading-spinner>
 
     <ng-container *ngIf="!isLoading">
       <!-- Compteurs KPI -->
@@ -75,6 +78,40 @@ import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.com
           </div>
         </mat-card>
       </div>
+
+      <!-- Suggestion Anti-Gaspi en vedette -->
+      <mat-card class="featured-suggestion-card" *ngIf="topRecommendation">
+        <div class="featured-content">
+          <div class="featured-badge">
+            <mat-icon>auto_awesome</mat-icon>
+            <span>Suggestion Anti-Gaspi du Jour</span>
+          </div>
+          <h2 class="featured-title">{{ topRecommendation.recipe.name }}</h2>
+          <p class="featured-desc">{{ topRecommendation.recipe.description || 'Idéal pour cuisiner vos produits disponibles.' }}</p>
+
+          <div class="featured-meta">
+            <span><mat-icon>timer</mat-icon> {{ topRecommendation.recipe.totalTimeMinutes }} min</span>
+            <span><mat-icon>people</mat-icon> {{ topRecommendation.recipe.servings }} personnes</span>
+            <span class="match-badge">🎯 {{ topRecommendation.matchPercentage }}% en stock</span>
+            <span class="score-badge">⭐ {{ topRecommendation.score }} pts</span>
+          </div>
+
+          <div class="featured-urgency" *ngIf="topRecommendation.expiringIngredientsUsed.length > 0">
+            <mat-icon color="warn">alarm</mat-icon>
+            <span>Sauve : <strong>{{ topRecommendation.expiringIngredientsUsed.join(', ') }}</strong></span>
+          </div>
+        </div>
+
+        <div class="featured-actions">
+          <button mat-raised-button color="primary" (click)="openRecipeDetail(topRecommendation)">
+            <mat-icon>visibility</mat-icon>
+            Voir la recette
+          </button>
+          <a mat-button color="primary" routerLink="/recommendations">
+            Toutes les suggestions &rarr;
+          </a>
+        </div>
+      </mat-card>
 
       <div class="dashboard-widgets-grid">
         <!-- Widget 1: Produits à consommer d'urgence -->
@@ -127,13 +164,13 @@ import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.com
               <mat-icon color="primary">add_shopping_cart</mat-icon>
               <span>Nouvelle entrée stock</span>
             </button>
-            <button mat-stroked-button class="shortcut-btn" routerLink="/recipes">
-              <mat-icon color="accent">menu_book</mat-icon>
-              <span>Explorer les recettes</span>
-            </button>
             <button mat-stroked-button class="shortcut-btn" routerLink="/recommendations">
               <mat-icon color="primary">auto_awesome</mat-icon>
               <span>Idées de repas du jour</span>
+            </button>
+            <button mat-stroked-button class="shortcut-btn" routerLink="/recipes">
+              <mat-icon color="accent">menu_book</mat-icon>
+              <span>Explorer les recettes</span>
             </button>
             <button mat-stroked-button class="shortcut-btn" routerLink="/products">
               <mat-icon color="primary">inventory_2</mat-icon>
@@ -207,6 +244,95 @@ import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.com
           color: #64748b;
           font-weight: 500;
         }
+      }
+    }
+
+    .featured-suggestion-card {
+      margin-bottom: 24px;
+      padding: 24px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+      border: 1px solid #bbf7d0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+
+      .featured-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #16a34a;
+        color: #ffffff;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        mat-icon { font-size: 16px; width: 16px; height: 16px; }
+      }
+
+      .featured-title {
+        margin: 0 0 6px 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .featured-desc {
+        color: #475569;
+        margin: 0 0 12px 0;
+        font-size: 0.9rem;
+      }
+
+      .featured-meta {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.82rem;
+        color: #334155;
+
+        span {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          mat-icon { font-size: 16px; width: 16px; height: 16px; color: #16a34a; }
+        }
+
+        .match-badge {
+          background-color: #dcfce7;
+          color: #15803d;
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-weight: 600;
+        }
+
+        .score-badge {
+          background-color: #fef3c7;
+          color: #b45309;
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-weight: 700;
+        }
+      }
+
+      .featured-urgency {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        font-size: 0.85rem;
+        color: #991b1b;
+        mat-icon { font-size: 18px; width: 18px; height: 18px; }
+      }
+
+      .featured-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
       }
     }
 
@@ -288,10 +414,12 @@ import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.com
 })
 export class DashboardComponent implements OnInit {
   private stockService = inject(StockService);
+  private recommendationService = inject(RecommendationService);
   private dialog = inject(MatDialog);
 
   summary: StockSummary | null = null;
   expiringItems: StockItem[] = [];
+  topRecommendation: Recommendation | null = null;
   isLoading = true;
 
   ngOnInit(): void {
@@ -302,6 +430,14 @@ export class DashboardComponent implements OnInit {
     this.isLoading = true;
     this.stockService.getStockSummary().subscribe({
       next: (sum) => this.summary = sum
+    });
+
+    this.recommendationService.getDailyRecommendations(1).subscribe({
+      next: (recs) => {
+        if (recs && recs.length > 0) {
+          this.topRecommendation = recs[0];
+        }
+      }
     });
 
     this.stockService.getExpiringStock(3).subscribe({
@@ -336,6 +472,13 @@ export class DashboardComponent implements OnInit {
       if (updated) {
         this.loadDashboardData();
       }
+    });
+  }
+
+  openRecipeDetail(rec: Recommendation): void {
+    this.dialog.open(RecipeDetailDialogComponent, {
+      width: '680px',
+      data: { recipe: rec.recipe }
     });
   }
 }
