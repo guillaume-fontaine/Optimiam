@@ -276,23 +276,23 @@ gantt
 
 **Objectif :** Développer l'abstraction matérielle et les simulateurs (balance pour pesée des produits, imprimante de tickets de stock, scanner code-barres).
 
-- [ ] **8.1 Backend — Abstraction Hardware (`com.project.nut.hardware`)**
-  - [ ] Définir les interfaces métier pures :
-    - [ ] `ScaleService` (`WeightMeasurement measure()`).
-    - [ ] `PrinterService` (`PrintResult print(PrintDocument document)`).
-    - [ ] `ScannerService` (`ScanResult scanBarcode()`).
-  - [ ] Implémentations simulées :
-    - [ ] `SimulatedScaleService` (retourne poids simulé, configurable).
-    - [ ] `SimulatedPrinterService` (génère document / aperçu PDF ou log structuré).
-    - [ ] `SimulatedScannerService` (simulation de lecture EAN/QR).
-  - [ ] Endpoints API de simulation (`/api/v1/hardware/scales/simulated/*`, `/api/v1/hardware/printers/simulated/*`).
-  - [ ] Tests unitaires et d'isolation (aucune fuite du hardware dans le domaine métier).
+- [x] **8.1 Backend — Abstraction Hardware (`com.project.nut.hardware`)**
+  - [x] Définir les interfaces métier pures :
+    - [x] `ScaleService` (`WeightMeasurement measure()`).
+    - [x] `PrinterService` (`PrintResult print(PrintDocument document)`).
+    - [x] `ScannerService` (`ScanResult scanBarcode()`).
+  - [x] Implémentations simulées :
+    - [x] `SimulatedScaleService` (retourne poids simulé, configurable).
+    - [x] `SimulatedPrinterService` (génère document / aperçu PDF ou log structuré).
+    - [x] `SimulatedScannerService` (simulation de lecture EAN/QR).
+  - [x] Endpoints API de simulation (`/api/v1/hardware/scales/simulated/*`, `/api/v1/hardware/printers/simulated/*`).
+  - [x] Tests unitaires et d'isolation (aucune fuite du hardware dans le domaine métier).
 
-- [ ] **8.2 Frontend — Interface Simulateurs Hardware (`features/hardware`)**
-  - [ ] Widget interactif "Balance Virtuelle" (ajustement du poids `[-] / [+]`, bouton `[PESER]` connecté directement au dialogue d'entrée en stock).
-  - [ ] Dialogue "Ticket de Stock / Impression" (aperçu visuel du ticket généré avec nom produit, poids, DLC, code-barres).
-  - [ ] Composant "Lecteur Code-Barres Simulé" (sélection rapide d'un code-barres de test).
-  - [ ] Tests des composants.
+- [x] **8.2 Frontend — Interface Simulateurs Hardware (`features/hardware`)**
+  - [x] Widget interactif "Balance Virtuelle" (ajustement du poids `[-] / [+]`, bouton `[PESER]` connecté directement au dialogue d'entrée en stock).
+  - [x] Dialogue "Ticket de Stock / Impression" (aperçu visuel du ticket généré avec nom produit, poids, DLC, code-barres).
+  - [x] Composant "Lecteur Code-Barres Simulé" (sélection rapide d'un code-barres de test).
+  - [x] Tests des composants.
 
 ---
 
@@ -339,5 +339,5 @@ gantt
 | **5. Planning des Repas** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **6. Courses & Consommation** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **7. PWA & Synchronisation Offline** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **8. Hardware Simulé** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **8. Hardware Simulé** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **9. Sécurité & Scénario Démo E2E** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |

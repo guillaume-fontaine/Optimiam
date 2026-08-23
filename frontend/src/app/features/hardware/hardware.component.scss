@@ -1,0 +1,317 @@
+.hardware-header {
+  margin-bottom: 20px;
+
+  .page-title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .page-subtitle {
+    margin: 4px 0 0 0;
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+}
+
+.hardware-card {
+  border-radius: 12px;
+  background-color: #ffffff;
+  padding: 8px 16px 24px 16px;
+
+  .tab-icon {
+    margin-right: 6px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .tab-content {
+    padding: 24px 8px 8px 8px;
+  }
+}
+
+// --- BALANCE ---
+.scale-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: 650px;
+  margin: 0 auto;
+
+  .lcd-screen {
+    background-color: #1e293b;
+    border: 6px solid #0f172a;
+    border-radius: 16px;
+    padding: 20px 32px;
+    width: 100%;
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    .lcd-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      font-family: 'Courier New', Courier, monospace;
+
+      .lcd-status {
+        color: #ef4444;
+        font-weight: 700;
+        &.stable { color: #22c55e; }
+      }
+
+      .lcd-brand {
+        color: #64748b;
+        letter-spacing: 1px;
+      }
+    }
+
+    .lcd-value-box {
+      display: flex;
+      justify-content: flex-end;
+      align-items: baseline;
+      gap: 12px;
+
+      .lcd-digits {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 4rem;
+        font-weight: 900;
+        color: #22c55e;
+        letter-spacing: 4px;
+        text-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+      }
+
+      .lcd-unit {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #86efac;
+      }
+    }
+  }
+
+  .scale-controls {
+    width: 100%;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+
+    h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .slider-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+
+      label { font-size: 0.9rem; color: #475569; }
+      .weight-slider { width: 100%; }
+    }
+
+    .quick-weights-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+
+      .quick-label { font-size: 0.85rem; font-weight: 600; color: #64748b; }
+      button { font-size: 0.8rem; }
+    }
+
+    .scale-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 16px;
+    }
+  }
+}
+
+// --- IMPRIMANTE ---
+.printer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
+
+  .printer-form-card, .printer-preview-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+
+    h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  }
+
+  .preset-products {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    .preset-label { font-size: 0.85rem; font-weight: 600; color: #64748b; }
+  }
+
+  .print-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .form-row { display: flex; gap: 12px; }
+    .half-width { flex: 1; }
+
+    .print-btn {
+      height: 44px;
+      mat-icon { margin-right: 6px; }
+    }
+  }
+
+  .ticket-wrapper {
+    background-color: #ffffff;
+    border: 2px dashed #94a3b8;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    .ticket-ascii {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      line-height: 1.3;
+      margin: 0;
+      color: #0f172a;
+    }
+  }
+
+  .print-history-box {
+    margin-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+
+    h4 { margin: 0 0 8px 0; font-size: 0.9rem; color: #475569; }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      padding: 4px 0;
+      color: #334155;
+      .hist-time { margin-left: auto; color: #94a3b8; }
+    }
+  }
+}
+
+// --- SCANNER ---
+.scanner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 750px;
+  margin: 0 auto;
+
+  .scanner-input-card, .scan-result-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .scan-hint { color: #64748b; font-size: 0.85rem; margin: 0 0 16px 0; }
+  }
+
+  .scan-bar {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    .scan-field { flex: 1; }
+    .scan-btn { height: 56px; padding: 0 20px; mat-icon { margin-right: 4px; } }
+  }
+
+  .quick-barcodes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .quick-title { font-size: 0.85rem; font-weight: 600; color: #64748b; }
+    button { justify-content: flex-start; mat-icon { margin-right: 8px; font-size: 18px; width: 18px; height: 18px; } }
+  }
+
+  .result-box {
+    border-radius: 8px;
+    padding: 16px;
+
+    &.result-found {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      mat-icon { color: #16a34a; }
+    }
+
+    &.result-not-found {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      mat-icon { color: #ef4444; }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .matched-product-details {
+      .prod-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        .prod-title { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .prod-cat { font-size: 0.8rem; background-color: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; }
+      }
+
+      .stock-lots {
+        h4 { margin: 0 0 8px 0; font-size: 0.9rem; color: #334155; }
+        .stock-lot-item {
+          display: flex;
+          justify-content: space-between;
+          padding: 6px 10px;
+          background-color: #ffffff;
+          border-radius: 6px;
+          margin-bottom: 6px;
+          font-size: 0.85rem;
+          .dlc-tag { color: #d97706; font-weight: 600; }
+        }
+      }
+    }
+  }
+}

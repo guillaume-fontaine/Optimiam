@@ -1,0 +1,227 @@
+<div class="hardware-header">
+  <div>
+    <h1 class="page-title">Console Simulateur Matériel (HAL) ⚖️🏷️📱</h1>
+    <p class="page-subtitle">Testez en direct les interactions avec la balance connectée, l'imprimante thermique et le scanner optique.</p>
+  </div>
+</div>
+
+<mat-card class="hardware-card">
+  <mat-tab-group animationDuration="200ms">
+    <!-- ONGLET 1 : BALANCE CONNECTÉE -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">scale</mat-icon>
+        Balance Connectée
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="scale-container">
+          <!-- Afficheur LCD Numérique Réaliste -->
+          <div class="lcd-screen">
+            <div class="lcd-header">
+              <span class="lcd-status" [class.stable]="scaleMeasurement?.stable">
+                {{ scaleMeasurement?.stable ? '● STABLE' : '○ INSTABLE' }}
+              </span>
+              <span class="lcd-brand">OPTIMIAM SCALE v1.0</span>
+            </div>
+            <div class="lcd-value-box">
+              <span class="lcd-digits">{{ scaleMeasurement?.weight | number:'1.3-3' }}</span>
+              <span class="lcd-unit">{{ scaleMeasurement?.unit || 'KG' }}</span>
+            </div>
+          </div>
+
+          <!-- Contrôles de Simulation -->
+          <div class="scale-controls">
+            <h3>Contrôles du Simulateur de Pesée</h3>
+
+            <div class="slider-box">
+              <label>Poids sur le plateau : <strong>{{ simulatedWeight | number:'1.3-3' }} kg</strong></label>
+              <mat-slider min="0" max="5" step="0.05" class="weight-slider">
+                <input matSliderThumb [(ngModel)]="simulatedWeight" (ngModelChange)="onWeightSliderChange($event)" />
+              </mat-slider>
+            </div>
+
+            <div class="quick-weights-row">
+              <span class="quick-label">Ajouter :</span>
+              <button mat-stroked-button (click)="addWeight(0.100)">+100g</button>
+              <button mat-stroked-button (click)="addWeight(0.250)">+250g</button>
+              <button mat-stroked-button (click)="addWeight(0.500)">+500g</button>
+              <button mat-stroked-button (click)="addWeight(1.000)">+1 kg</button>
+            </div>
+
+            <div class="scale-actions-row">
+              <mat-slide-toggle [(ngModel)]="isStable" (change)="applyWeightSimulation()" color="primary">
+                Mesure stable
+              </mat-slide-toggle>
+
+              <button mat-raised-button color="warn" (click)="tare()">
+                <mat-icon>refresh</mat-icon>
+                Tarer (Zéro)
+              </button>
+
+              <button mat-raised-button color="primary" (click)="loadScale()">
+                <mat-icon>sync</mat-icon>
+                Lire la Balance
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- ONGLET 2 : IMPRIMANTE THERMIQUE D'ÉTIQUETTES -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">print</mat-icon>
+        Imprimante d'Étiquettes
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="printer-grid">
+          <!-- Formulaire d'Impression -->
+          <div class="printer-form-card">
+            <h3>Paramètres de l'étiquette</h3>
+
+            <div class="preset-products">
+              <span class="preset-label">Produits rapides :</span>
+              <mat-chip-listbox>
+                <mat-chip-option *ngFor="let p of products" (click)="onProductSelectForPrint(p.id)">
+                  {{ p.name }}
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+
+            <form [formGroup]="printForm" class="print-form">
+              <mat-form-field appearance="outline">
+                <mat-label>Nom du produit</mat-label>
+                <input matInput formControlName="productName" />
+              </mat-form-field>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Quantité + Unité</mat-label>
+                  <input matInput formControlName="quantityWithUnit" placeholder="Ex: 0.750 kg" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Emplacement</mat-label>
+                  <mat-select formControlName="location">
+                    <mat-option value="FRIDGE">Réfrigérateur</mat-option>
+                    <mat-option value="FREEZER">Congélateur</mat-option>
+                    <mat-option value="PANTRY">Placard / Épicerie</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Date d'entrée</mat-label>
+                  <input matInput type="date" formControlName="entryDate" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Date de péremption (DLC)</mat-label>
+                  <input matInput type="date" formControlName="expirationDate" />
+                </mat-form-field>
+              </div>
+
+              <button mat-raised-button color="primary" class="print-btn" (click)="printCurrentLabel()">
+                <mat-icon>print</mat-icon>
+                Imprimer l'étiquette thermique
+              </button>
+            </form>
+          </div>
+
+          <!-- Rendu Visuel du Ticket Thermique -->
+          <div class="printer-preview-card">
+            <h3>Aperçu de l'étiquette thermique</h3>
+            
+            <div class="ticket-wrapper">
+              <pre class="ticket-ascii">{{ lastPrintJob ? lastPrintJob.labelContent : 'Aucune étiquette imprimée.' }}</pre>
+            </div>
+
+            <div class="print-history-box" *ngIf="printHistory.length > 0">
+              <h4>Historique des impressions ({{ printHistory.length }})</h4>
+              <div class="history-item" *ngFor="let job of printHistory | slice:0:3">
+                <mat-icon color="primary">receipt</mat-icon>
+                <span class="hist-name">{{ job.productName }} ({{ job.quantityWithUnit }})</span>
+                <span class="hist-time">{{ job.printedAt | date:'HH:mm:ss' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- ONGLET 3 : SCANNER CODE-BARRES -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">qr_code_scanner</mat-icon>
+        Scanner Code-Barres
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="scanner-container">
+          <!-- Entrée du Scan -->
+          <div class="scanner-input-card">
+            <h3>Lecteur Optique de Codes-Barres</h3>
+            <p class="scan-hint">Entrez un code EAN-13 ou cliquez sur l'un des boutons de raccourci ci-dessous :</p>
+
+            <div class="scan-bar">
+              <mat-form-field appearance="outline" class="scan-field">
+                <mat-label>Code-barres (EAN-13)</mat-label>
+                <input matInput [(ngModel)]="scanInput" (keyup.enter)="scan()" placeholder="Ex: 3017620422003" />
+                <mat-icon matPrefix>qr_code_scanner</mat-icon>
+              </mat-form-field>
+              <button mat-raised-button color="primary" class="scan-btn" (click)="scan()" [disabled]="isScanning">
+                <mat-icon>search</mat-icon>
+                Scanner
+              </button>
+            </div>
+
+            <div class="quick-barcodes-list">
+              <span class="quick-title">Codes-barres de démonstration :</span>
+              <button mat-stroked-button *ngFor="let b of quickBarcodes" (click)="scan(b.code)">
+                <mat-icon>{{ b.icon }}</mat-icon>
+                {{ b.name }} ({{ b.code }})
+              </button>
+            </div>
+          </div>
+
+          <!-- Résultat du Scan -->
+          <div class="scan-result-card" *ngIf="scanResult">
+            <h3>Résultat de l'analyse</h3>
+
+            <div class="result-box" [class.result-found]="scanResult.productFound" [class.result-not-found]="!scanResult.productFound">
+              <div class="result-header">
+                <mat-icon>{{ scanResult.productFound ? 'check_circle' : 'error' }}</mat-icon>
+                <span class="result-msg">{{ scanResult.message }} (Code : {{ scanResult.rawBarcode }})</span>
+              </div>
+
+              <!-- Produit Trouvé -->
+              <div class="matched-product-details" *ngIf="scanResult.productFound && scanResult.matchedProduct">
+                <div class="prod-row">
+                  <span class="prod-title">{{ scanResult.matchedProduct.name }}</span>
+                  <span class="prod-cat">{{ scanResult.matchedProduct.category?.name }}</span>
+                </div>
+
+                <div class="stock-lots" *ngIf="scanResult.matchingStockItems && scanResult.matchingStockItems.length > 0">
+                  <h4>Lots actuellement en stock :</h4>
+                  <div class="stock-lot-item" *ngFor="let lot of scanResult.matchingStockItems">
+                    <span>Quantité : <strong>{{ lot.quantity }} {{ lot.unitSymbol }}</strong></span>
+                    <span>Emplacement : {{ lot.locationLabel }}</span>
+                    <span class="dlc-tag">DLC : {{ lot.expirationDate }}</span>
+                  </div>
+                </div>
+
+                <div class="stock-lots empty" *ngIf="!scanResult.matchingStockItems || scanResult.matchingStockItems.length === 0">
+                  <em>Ce produit est dans le catalogue mais aucun lot n'est actuellement en stock.</em>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>
