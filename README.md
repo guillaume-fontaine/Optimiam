@@ -44,12 +44,18 @@ graph TD
 - Java 21+ ou 24 (`export JAVA_HOME=...`)
 - Node.js 20+ et npm
 
-### 2. Compilation Complète (Backend + Frontend)
+### 2. Démarrer la Base de Données PostgreSQL
+```bash
+./start-db.sh
+```
+*(Pour arrêter le container : `./stop-db.sh`)*
+
+### 3. Compilation Complète (Backend + Frontend)
 ```bash
 ./build-all.sh
 ```
 
-### 3. Lancer le Backend
+### 4. Lancer le Backend (Profil dev)
 ```bash
 cd backend
 ./mvnw spring-boot:run
@@ -57,7 +63,7 @@ cd backend
 - Swagger UI : [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 - Actuator Health : [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
 
-### 4. Lancer le Frontend
+### 5. Lancer le Frontend
 ```bash
 cd frontend
 npm start
