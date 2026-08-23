@@ -250,25 +250,25 @@ gantt
 
 **Objectif :** Rendre l'application installable en PWA, permettre la consultation et modification du stock hors-ligne avec synchronisation et gestion des conflits à la reconnexion.
 
-- [ ] **7.1 Frontend — Service Worker, IndexedDB & Sync Engine (`features/sync`, `core/offline`)**
-  - [ ] Configurer `@angular/pwa` et le fichier `ngsw-config.json` (mise en cache des assets et shell de l'application).
-  - [ ] Mettre en place la base de données locale IndexedDB (via Dexie.js ou `idb`) pour stocker en cache local : Stock, Recettes, Planning, Liste de courses.
-  - [ ] Implémenter la file d'attente locale `PendingOperationsQueue` (stocke chaque opération locale avec UUID, timestamp, type, payload).
-  - [ ] Créer le `SyncManager` :
-    - [ ] Écoute l'état du réseau (`navigator.onLine`, événements `online/offline`).
-    - [ ] Rejoue les opérations en attente lors du retour de la connexion.
-    - [ ] Gère les notifications de statut de synchronisation (en ligne, hors ligne, synchronisation en cours, conflits).
+- [x] **7.1 Frontend — Service Worker, IndexedDB & Sync Engine (`features/sync`, `core/offline`)**
+  - [x] Configurer `@angular/pwa` et le fichier `ngsw-config.json` (mise en cache des assets et shell de l'application).
+  - [x] Mettre en place la base de données locale IndexedDB (via Dexie.js ou `idb`) pour stocker en cache local : Stock, Recettes, Planning, Liste de courses.
+  - [x] Implémenter la file d'attente locale `PendingOperationsQueue` (stocke chaque opération locale avec UUID, timestamp, type, payload).
+  - [x] Créer le `SyncManager` :
+    - [x] Écoute l'état du réseau (`navigator.onLine`, événements `online/offline`).
+    - [x] Rejoue les opérations en attente lors du retour de la connexion.
+    - [x] Gère les notifications de statut de synchronisation (en ligne, hors ligne, synchronisation en cours, conflits).
 
-- [ ] **7.2 Backend — Module Synchronisation (`com.project.nut.synchronization`)**
-  - [ ] **Domain & Application :**
-    - [ ] Entité `SyncOperation` pour tracer les flux et versions.
-    - [ ] Gestion optimiste des versions (champs `version`, `updatedAt` sur toutes les entités synchronisables).
-    - [ ] Détection des conflits (retour HTTP `409 CONFLICT` si la version locale est obsolète).
-    - [ ] Stratégie de résolution V1 : *Last Write Wins* avec journalisation.
-  - [ ] **API :**
-    - [ ] `SyncController` (`POST /api/v1/sync/batch` pour traiter le lot d'opérations locales).
-  - [ ] **Tests :**
-    - [ ] Tests de rejeu d'opérations hors-ligne et de détection de conflits de versions concurrentes.
+- [x] **7.2 Backend — Module Synchronisation (`com.project.nut.synchronization`)**
+  - [x] **Domain & Application :**
+    - [x] Entité `SyncOperation` pour tracer les flux et versions.
+    - [x] Gestion optimiste des versions (champs `version`, `updatedAt` sur toutes les entités synchronisables).
+    - [x] Détection des conflits (retour HTTP `409 CONFLICT` si la version locale est obsolète).
+    - [x] Stratégie de résolution V1 : *Last Write Wins* avec journalisation.
+  - [x] **API :**
+    - [x] `SyncController` (`POST /api/v1/sync/batch` pour traiter le lot d'opérations locales).
+  - [x] **Tests :**
+    - [x] Tests de rejeu d'opérations hors-ligne et de détection de conflits de versions concurrentes.
 
 ---
 
@@ -338,6 +338,6 @@ gantt
 | **4. Moteur Recommandation & Dashboard** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **5. Planning des Repas** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **6. Courses & Consommation** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **7. PWA & Synchronisation Offline** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **7. PWA & Synchronisation Offline** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **8. Hardware Simulé** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **9. Sécurité & Scénario Démo E2E** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |

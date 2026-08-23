@@ -10,6 +10,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
+import { SyncStatusIndicatorComponent } from '../../shared/ui/sync-status-indicator/sync-status-indicator.component';
+
 interface NavItem {
   label: string;
   route: string;
@@ -26,7 +28,8 @@ interface NavItem {
     MatSidenavModule,
     MatListModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    SyncStatusIndicatorComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss']

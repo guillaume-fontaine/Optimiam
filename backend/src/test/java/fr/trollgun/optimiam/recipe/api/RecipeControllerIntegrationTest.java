@@ -59,6 +59,12 @@ class RecipeControllerIntegrationTest {
     @Autowired
     private fr.trollgun.optimiam.planning.domain.MealPlanRepository mealPlanRepository;
 
+    @Autowired
+    private fr.trollgun.optimiam.shopping.domain.ShoppingListRepository shoppingListRepository;
+
+    @Autowired
+    private fr.trollgun.optimiam.shopping.domain.ShoppingListItemRepository shoppingListItemRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private MockMvc mockMvc;
     private Product product;
@@ -66,6 +72,8 @@ class RecipeControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        shoppingListItemRepository.deleteAll();
+        shoppingListRepository.deleteAll();
         mealPlanRepository.deleteAll();
         recipeRepository.deleteAll();
         transactionRepository.deleteAll();
