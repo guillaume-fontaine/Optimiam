@@ -99,33 +99,33 @@ gantt
 
 **Objectif :** Gérer le stock disponible, les entrées, sorties, dates de péremption, emplacements, consommations et suivi des pertes alimentaires.
 
-- [ ] **2.1 Backend — Module Stock & Transactions (`com.project.nut.stock` & `com.project.nut.transaction`)**
-  - [ ] **Domain :**
-    - [ ] Entité `StockItem` (UUID, product_id, quantité, unité, date d'entrée, date de péremption DLC/DDM, emplacement `FRIDGE/FREEZER/PANTRY`, version optimiste, statut).
-    - [ ] Entité `StockTransaction` (UUID, stock_item_id, product_id, type `ENTRY/EXIT/CONSUMPTION/LOSS/ADJUSTMENT`, quantité, unité, motif, timestamp, device_id).
-    - [ ] Repositories `StockRepository` et `StockTransactionRepository`.
-  - [ ] **Application & Logique Métier Transactionnelle :**
-    - [ ] Service `StockEntryService` (création / ajout de quantité, émission d'événement `StockEntryCreated`).
-    - [ ] Service `StockExitService` (consommation, émission d'événement `StockExitCreated`).
-    - [ ] Service `StockLossService` (déclaration de perte, motifs `EXPIRED/SPOILED/OVERCOOKED`, calcul coût/poids perdu, émission `StockLossRecorded`).
-    - [ ] Logique d'alerte péremption (produits périmés, urgents `< 3 jours`, à surveiller).
-  - [ ] **API :**
-    - [ ] `StockController` (`GET /api/v1/stock`, `GET /api/v1/stock/expiring`, `POST /api/v1/stock/entries`, `POST /api/v1/stock/exits`, `POST /api/v1/stock/losses`).
-    - [ ] `TransactionController` (`GET /api/v1/transactions`, filtres par période et type).
-    - [ ] `LossStatisticsController` (`GET /api/v1/losses/stats` — agrégations par semaine/mois, top produits perdus).
-  - [ ] **Tests :**
-    - [ ] Tests unitaires des règles de mouvement de stock et vérification de la concurrence/version.
-    - [ ] Tests d'intégration des transactions et des rollbacks.
+- [x] **2.1 Backend — Module Stock & Transactions (`com.project.nut.stock` & `com.project.nut.transaction`)**
+  - [x] **Domain :**
+    - [x] Entité `StockItem` (UUID, product_id, quantité, unité, date d'entrée, date de péremption DLC/DDM, emplacement `FRIDGE/FREEZER/PANTRY`, version optimiste, statut).
+    - [x] Entité `StockTransaction` (UUID, stock_item_id, product_id, type `ENTRY/EXIT/CONSUMPTION/LOSS/ADJUSTMENT`, quantité, unité, motif, timestamp, device_id).
+    - [x] Repositories `StockRepository` et `StockTransactionRepository`.
+  - [x] **Application & Logique Métier Transactionnelle :**
+    - [x] Service `StockEntryService` (création / ajout de quantité, émission d'événement `StockEntryCreated`).
+    - [x] Service `StockExitService` (consommation, émission d'événement `StockExitCreated`).
+    - [x] Service `StockLossService` (déclaration de perte, motifs `EXPIRED/SPOILED/OVERCOOKED`, calcul coût/poids perdu, émission `StockLossRecorded`).
+    - [x] Logique d'alerte péremption (produits périmés, urgents `< 3 jours`, à surveiller).
+  - [x] **API :**
+    - [x] `StockController` (`GET /api/v1/stock`, `GET /api/v1/stock/expiring`, `POST /api/v1/stock/entries`, `POST /api/v1/stock/exits`, `POST /api/v1/stock/losses`).
+    - [x] `TransactionController` (`GET /api/v1/transactions`, filtres par période et type).
+    - [x] `LossStatisticsController` (`GET /api/v1/losses/stats` — agrégations par semaine/mois, top produits perdus).
+  - [x] **Tests :**
+    - [x] Tests unitaires des règles de mouvement de stock et vérification de la concurrence/version.
+    - [x] Tests d'intégration des transactions et des rollbacks.
 
-- [ ] **2.2 Frontend — Stock, Mouvements & Alertes (`features/stock`, `features/transactions`)**
-  - [ ] Vue globale du Stock avec badges d'urgence colorés (vert = ok, orange = bientôt périmé, rouge = urgent).
-  - [ ] Filtres par emplacement (Frigo, Placard, Congélateur) et tri par date de péremption.
-  - [ ] Dialogues d'actions rapides :
-    - [ ] Entrée en stock (+ pesée / quantité / date péremption).
-    - [ ] Consommation partielle ou totale.
-    - [ ] Déclaration de perte avec motif.
-  - [ ] Écran Historique des transactions et journal d'audit.
-  - [ ] Tests des composants.
+- [x] **2.2 Frontend — Stock, Mouvements & Alertes (`features/stock`, `features/transactions`)**
+  - [x] Vue globale du Stock avec badges d'urgence colorés (vert = ok, orange = bientôt périmé, rouge = urgent).
+  - [x] Filtres par emplacement (Frigo, Placard, Congélateur) et tri par date de péremption.
+  - [x] Dialogues d'actions rapides :
+    - [x] Entrée en stock (+ pesée / quantité / date péremption).
+    - [x] Consommation partielle ou totale.
+    - [x] Déclaration de perte avec motif.
+  - [x] Écran Historique des transactions et journal d'audit.
+  - [x] Tests des composants.
 
 ---
 
@@ -333,7 +333,7 @@ gantt
 | :--- | :---: | :---: | :---: | :---: |
 | **0. Setup & Architecture** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **1. Produits & Catégories** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **2. Stocks, Mouvements & Pertes** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **2. Stocks, Mouvements & Pertes** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **3. Recettes & Nutrition** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **4. Moteur Recommandation & Dashboard** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **5. Planning des Repas** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |

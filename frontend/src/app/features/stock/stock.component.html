@@ -1,0 +1,276 @@
+<div class="stock-header">
+  <div>
+    <h1 class="page-title">Gestion de mon Stock</h1>
+    <p class="page-subtitle">Suivez vos produits disponibles, anticipez les dates de péremption et évitez les pertes.</p>
+  </div>
+  <button mat-raised-button color="primary" (click)="openEntryDialog()">
+    <mat-icon>add_shopping_cart</mat-icon>
+    Ajouter au Stock
+  </button>
+</div>
+
+<!-- Compteurs KPI de Synthèse Stock -->
+<div class="kpi-grid" *ngIf="summary">
+  <mat-card class="kpi-card">
+    <div class="kpi-content">
+      <div class="kpi-icon-box bg-blue">
+        <mat-icon>kitchen</mat-icon>
+      </div>
+      <div>
+        <div class="kpi-value">{{ summary.totalAvailableItems }}</div>
+        <div class="kpi-label">Produits en stock</div>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="kpi-card" [class.highlight-warning]="summary.expiringSoonItems > 0">
+    <div class="kpi-content">
+      <div class="kpi-icon-box bg-orange">
+        <mat-icon>alarm</mat-icon>
+      </div>
+      <div>
+        <div class="kpi-value">{{ summary.expiringSoonItems }}</div>
+        <div class="kpi-label">À consommer &lt; 3 jours</div>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="kpi-card" [class.highlight-danger]="summary.expiredItems > 0">
+    <div class="kpi-content">
+      <div class="kpi-icon-box bg-red">
+        <mat-icon>warning</mat-icon>
+      </div>
+      <div>
+        <div class="kpi-value">{{ summary.expiredItems }}</div>
+        <div class="kpi-label">Produits périmés</div>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="kpi-card">
+    <div class="kpi-content">
+      <div class="kpi-icon-box bg-green">
+        <mat-icon>delete_sweep</mat-icon>
+      </div>
+      <div>
+        <div class="kpi-value">{{ summary.totalLossesWeightKg }} kg</div>
+        <div class="kpi-label">Gaspillage (30j)</div>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+<mat-tab-group (selectedIndexChange)="onTabChange($event)" class="stock-tab-group" animationDuration="0ms">
+  <!-- Onglet 1 : Stock Actif -->
+  <mat-tab label="📦 Produits en Stock">
+    <!-- Barre d'outils et filtres -->
+    <mat-card class="toolbar-card">
+      <div class="search-filter-row">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-icon matPrefix>search</mat-icon>
+          <mat-label>Rechercher dans mon stock...</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="Ex: Tomates, Lait, Oeufs..." />
+          <button mat-icon-button matSuffix *ngIf="searchControl.value" (click)="searchControl.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <!-- Filtre par emplacement -->
+      <div class="location-chips-container">
+        <span class="filter-label">Emplacement :</span>
+        <mat-chip-listbox aria-label="Filtre par emplacement">
+          <mat-chip-option [selected]="selectedLocation === null" (selectionChange)="onLocationSelect(null)">
+            Tous
+          </mat-chip-option>
+          <mat-chip-option *ngFor="let loc of locationOptions" 
+            [selected]="selectedLocation === loc.value" 
+            (selectionChange)="onLocationSelect(loc.value)">
+            <mat-icon class="chip-icon">{{ loc.icon }}</mat-icon>
+            {{ loc.label }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+    </mat-card>
+
+    <!-- Tableau du stock -->
+    <mat-card class="table-card">
+      <app-loading-spinner *ngIf="isLoadingStock" message="Chargement des stocks en cours..."></app-loading-spinner>
+
+      <ng-container *ngIf="!isLoadingStock">
+        <app-empty-state 
+          *ngIf="stockItems.length === 0"
+          icon="kitchen"
+          title="Votre stock est vide"
+          description="Vous n'avez aucun produit enregistré dans cet emplacement.">
+          <button mat-raised-button color="primary" (click)="openEntryDialog()">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Ajouter un produit
+          </button>
+        </app-empty-state>
+
+        <div class="table-responsive" *ngIf="stockItems.length > 0">
+          <table mat-table [dataSource]="stockItems" class="stock-table">
+            <!-- Produit -->
+            <ng-container matColumnDef="product">
+              <th mat-header-cell *matHeaderCellDef>Produit</th>
+              <td mat-cell *matCellDef="let element" class="product-cell">
+                <div class="product-info">
+                  <span class="product-name">{{ element.product.name }}</span>
+                  <span class="product-cat" *ngIf="element.product.category">{{ element.product.category.name }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Quantité -->
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Quantité disponible</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="quantity-value">{{ element.quantity }} {{ element.unitSymbol }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Emplacement -->
+            <ng-container matColumnDef="location">
+              <th mat-header-cell *matHeaderCellDef>Emplacement</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="location-badge">
+                  <mat-icon class="loc-badge-icon">{{ element.locationIcon }}</mat-icon>
+                  {{ element.locationLabel }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Date de péremption -->
+            <ng-container matColumnDef="expiration">
+              <th mat-header-cell *matHeaderCellDef>Date de péremption (DLC)</th>
+              <td mat-cell *matCellDef="let element">
+                <div *ngIf="element.expirationDate" class="expiration-info">
+                  <span>{{ element.expirationDate | date:'dd/MM/yyyy' }}</span>
+                  <span class="days-remaining" [ngClass]="{
+                    'text-danger': element.daysUntilExpiration < 0,
+                    'text-warning': element.daysUntilExpiration >= 0 && element.daysUntilExpiration <= 3,
+                    'text-ok': element.daysUntilExpiration > 3
+                  }">
+                    ({{ element.daysUntilExpiration < 0 ? 'Périmé depuis ' + (-element.daysUntilExpiration) + 'j' : 'dans ' + element.daysUntilExpiration + 'j' }})
+                  </span>
+                </div>
+                <span class="text-muted" *ngIf="!element.expirationDate">—</span>
+              </td>
+            </ng-container>
+
+            <!-- Statut de fraîcheur -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Fraîcheur</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="badge-urgent" *ngIf="element.status === 'EXPIRED'">🔴 Périmé</span>
+                <span class="badge-warning" *ngIf="element.status === 'EXPIRING_SOON'">🟠 Urgent (&lt; 3j)</span>
+                <span class="badge-ok" *ngIf="element.status === 'AVAILABLE'">🟢 Bon</span>
+              </td>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef class="text-right">Actions</th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                <button mat-stroked-button color="primary" class="action-btn" matTooltip="Consommer pour un repas" (click)="openExitDialog(element)">
+                  <mat-icon>restaurant</mat-icon>
+                  Consommer
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Déclarer une perte / jeté" (click)="openLossDialog(element)">
+                  <mat-icon>delete_sweep</mat-icon>
+                </button>
+                <button mat-icon-button color="default" matTooltip="Supprimer" (click)="deleteStockItem(element)">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedStockColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedStockColumns;" class="stock-row"></tr>
+          </table>
+
+          <mat-paginator 
+            [length]="totalStockElements"
+            [pageSize]="stockPageSize"
+            [pageIndex]="stockPageIndex"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            (page)="onStockPageChange($event)"
+            aria-label="Sélectionner la page">
+          </mat-paginator>
+        </div>
+      </ng-container>
+    </mat-card>
+  </mat-tab>
+
+  <!-- Onglet 2 : Historique des Transactions & Pertes -->
+  <mat-tab label="📊 Historique des Mouvements">
+    <mat-card class="table-card mt-3">
+      <app-loading-spinner *ngIf="isLoadingTx" message="Chargement des mouvements..."></app-loading-spinner>
+
+      <ng-container *ngIf="!isLoadingTx">
+        <app-empty-state 
+          *ngIf="transactions.length === 0"
+          icon="history"
+          title="Aucun mouvement enregistré"
+          description="Les entrées, consommations et pertes apparaîtront ici.">
+        </app-empty-state>
+
+        <div class="table-responsive" *ngIf="transactions.length > 0">
+          <table mat-table [dataSource]="transactions" class="stock-table">
+            <ng-container matColumnDef="timestamp">
+              <th mat-header-cell *matHeaderCellDef>Date & Heure</th>
+              <td mat-cell *matCellDef="let tx">{{ tx.timestamp | date:'dd/MM/yyyy HH:mm' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>Type</th>
+              <td mat-cell *matCellDef="let tx">
+                <span class="tx-badge" [ngClass]="{
+                  'tx-entry': tx.type === 'ENTRY',
+                  'tx-exit': tx.type === 'EXIT' || tx.type === 'CONSUMPTION',
+                  'tx-loss': tx.type === 'LOSS'
+                }">
+                  {{ tx.typeLabel }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="product">
+              <th mat-header-cell *matHeaderCellDef>Produit</th>
+              <td mat-cell *matCellDef="let tx" class="font-medium">{{ tx.product.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Quantité</th>
+              <td mat-cell *matCellDef="let tx">
+                <span class="font-bold">{{ tx.quantity }} {{ tx.unitSymbol }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="reason">
+              <th mat-header-cell *matHeaderCellDef>Motif / Précisions</th>
+              <td mat-cell *matCellDef="let tx">
+                <span *ngIf="tx.lossReasonLabel" class="loss-reason-tag">{{ tx.lossReasonLabel }}</span>
+                <span *ngIf="tx.reason">{{ tx.reason }}</span>
+                <span class="text-muted" *ngIf="!tx.lossReasonLabel && !tx.reason">—</span>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedTxColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedTxColumns;" class="stock-row"></tr>
+          </table>
+
+          <mat-paginator 
+            [length]="totalTxElements"
+            [pageSize]="txPageSize"
+            [pageIndex]="txPageIndex"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            (page)="onTxPageChange($event)"
+            aria-label="Sélectionner la page">
+          </mat-paginator>
+        </div>
+      </ng-container>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>

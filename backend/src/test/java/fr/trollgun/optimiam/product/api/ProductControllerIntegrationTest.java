@@ -35,6 +35,12 @@ class ProductControllerIntegrationTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private fr.trollgun.optimiam.stock.domain.StockItemRepository stockItemRepository;
+
+    @Autowired
+    private fr.trollgun.optimiam.transaction.domain.StockTransactionRepository transactionRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
 
     private MockMvc mockMvc;
@@ -43,6 +49,8 @@ class ProductControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        transactionRepository.deleteAll();
+        stockItemRepository.deleteAll();
         productRepository.deleteAll();
         categoryRepository.deleteAll();
 
