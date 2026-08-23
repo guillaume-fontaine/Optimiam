@@ -1,0 +1,127 @@
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  .page-title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .page-subtitle {
+    margin: 4px 0 0 0;
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+}
+
+.toolbar-card {
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+
+  .search-filter-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+
+    .search-field {
+      width: 100%;
+      ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+    }
+  }
+
+  .categories-chips-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+
+    .filter-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .cat-chip-content {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  }
+}
+
+.table-card {
+  border-radius: 12px;
+  background-color: #ffffff;
+  overflow: hidden;
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .products-table {
+    width: 100%;
+
+    .product-row {
+      transition: background-color 0.15s ease;
+      &:hover {
+        background-color: #f8fafc;
+      }
+    }
+
+    .product-name-cell {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .category-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #334155;
+      border-left: 3px solid;
+    }
+
+    .unit-badge {
+      font-size: 0.85rem;
+      color: #475569;
+    }
+
+    .barcode-tag {
+      background-color: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+
+    .text-muted {
+      color: #94a3b8;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+  }
+}

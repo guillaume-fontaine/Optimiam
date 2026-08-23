@@ -70,28 +70,28 @@ gantt
 
 **Objectif :** Gérer le catalogue de produits, les catégories, les unités de mesure et les durées indicatives de conservation.
 
-- [ ] **1.1 Backend — Module Produit (`com.project.nut.product`)**
-  - [ ] **Domain :**
-    - [ ] Entité `Product` (UUID, nom, code-barres, unité par défaut `KG/G/L/ML/UNIT`, catégorie, durée de conservation moyenne, timestamps, soft delete).
-    - [ ] Entité `Category` (UUID, nom, icône/couleur, description).
-    - [ ] Repositories `ProductRepository` et `CategoryRepository`.
-  - [ ] **Application / Use Cases :**
-    - [ ] `CreateProductUseCase`, `UpdateProductUseCase`, `GetProductUseCase`, `ListProductsUseCase`, `DeleteProductUseCase`.
-    - [ ] Gestion et validation des catégories associées.
-  - [ ] **API :**
-    - [ ] `ProductController` (`/api/v1/products`) avec pagination, recherche et filtres par catégorie.
-    - [ ] `CategoryController` (`/api/v1/categories`).
-    - [ ] DTOs de requête et réponse avec validations Bean Validation (`@NotBlank`, `@NotNull`, etc.).
-  - [ ] **Tests :**
-    - [ ] Tests unitaires des services.
-    - [ ] Tests d'intégration REST avec Testcontainers.
+- [x] **1.1 Backend — Module Produit (`com.project.nut.product`)**
+  - [x] **Domain :**
+    - [x] Entité `Product` (UUID, nom, code-barres, unité par défaut `KG/G/L/ML/UNIT`, catégorie, durée de conservation moyenne, timestamps, soft delete).
+    - [x] Entité `Category` (UUID, nom, icône/couleur, description).
+    - [x] Repositories `ProductRepository` et `CategoryRepository`.
+  - [x] **Application / Use Cases :**
+    - [x] `CreateProductUseCase`, `UpdateProductUseCase`, `GetProductUseCase`, `ListProductsUseCase`, `DeleteProductUseCase`.
+    - [x] Gestion et validation des catégories associées.
+  - [x] **API :**
+    - [x] `ProductController` (`/api/v1/products`) avec pagination, recherche et filtres par catégorie.
+    - [x] `CategoryController` (`/api/v1/categories`).
+    - [x] DTOs de requête et réponse avec validations Bean Validation (`@NotBlank`, `@NotNull`, etc.).
+  - [x] **Tests :**
+    - [x] Tests unitaires des services.
+    - [x] Tests d'intégration REST avec Testcontainers / MockMvc.
 
-- [ ] **1.2 Frontend — Gestion des Produits (`features/products`)**
-  - [ ] Service `ProductService` pour les appels API REST.
-  - [ ] Vue liste des produits avec recherche instantanée, filtres par catégories et pagination (`MatTable` / `MatCard`).
-  - [ ] Formulaire de création / édition de produit dans un dialogue Material (`MatDialog`).
-  - [ ] Gestion des unités et catégories dans l'interface.
-  - [ ] Tests unitaires des composants et du service.
+- [x] **1.2 Frontend — Gestion des Produits (`features/products`)**
+  - [x] Service `ProductService` pour les appels API REST.
+  - [x] Vue liste des produits avec recherche instantanée, filtres par catégories et pagination (`MatTable` / `MatCard`).
+  - [x] Formulaire de création / édition de produit dans un dialogue Material (`MatDialog`).
+  - [x] Gestion des unités et catégories dans l'interface.
+  - [x] Tests unitaires des composants et du service.
 
 ---
 
@@ -332,7 +332,7 @@ gantt
 | Module / Domaine | Backend | Frontend | Tests | Statut Global |
 | :--- | :---: | :---: | :---: | :---: |
 | **0. Setup & Architecture** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **1. Produits & Catégories** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **1. Produits & Catégories** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **2. Stocks, Mouvements & Pertes** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **3. Recettes & Nutrition** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **4. Moteur Recommandation & Dashboard** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
