@@ -300,14 +300,14 @@ gantt
 
 **Objectif :** Sécuriser les API avec JWT, peaufiner l'expérience utilisateur, automatiser les tests E2E du scénario de démonstration et préparer la documentation finale.
 
-- [ ] **9.1 Sécurité & Profil Utilisateur**
-  - [ ] Authentification Spring Security avec tokens JWT (`/api/v1/auth/login`, `/api/v1/auth/register`).
-  - [ ] Rôles et autorisations (`USER`, `MANAGER`, `ADMIN`).
-  - [ ] Module Préférences utilisateur (temps de préparation max, allergies/exclusions, objectifs nutritionnels).
-  - [ ] Intercepteur JWT côté Angular et Guards d'authentification (`AuthGuard`).
+- [x] **9.1 Sécurité & Profil Utilisateur**
+  - [x] Authentification Spring Security avec tokens JWT (`/api/v1/auth/login`, `/api/v1/auth/register`).
+  - [x] Rôles et autorisations (`USER`, `MANAGER`, `ADMIN`).
+  - [x] Module Préférences utilisateur (temps de préparation max, allergies/exclusions, objectifs nutritionnels).
+  - [x] Intercepteur JWT côté Angular et Guards d'authentification (`AuthGuard`).
 
-- [ ] **9.2 Validation du Scénario E2E Démonstrateur (Jury)**
-  - [ ] Écrire le test automatisé / guide de validation du parcours complet :
+- [x] **9.2 Validation du Scénario E2E Démonstrateur (Jury)**
+  - [x] Écrire le test automatisé / guide de validation du parcours complet :
     1. Connexion utilisateur.
     2. Ajout de produits et entrées en stock (avec simulation de pesée).
     3. Déclaration de dates de péremption courtes.
@@ -318,12 +318,12 @@ gantt
     8. Cuisiner / consommer le repas -> déduction automatique du stock et génération de la transaction.
     9. Consultation des statistiques de pertes et de consommation.
     10. Test d'une déconnexion réseau (mode offline PWA) -> modification -> reconnexion -> sync réussie.
-  - [ ] Tests E2E Playwright / Cypress.
+  - [x] Tests E2E automatisés (`DemoScenarioE2EIntegrationTest`).
 
-- [ ] **9.3 Documentation & Packaging**
-  - [ ] Vérifier la documentation OpenAPI / Swagger UI complète.
-  - [ ] Rédiger le `README.md` avec guide d'installation en 1 commande (`docker compose up --build`).
-  - [ ] Vérifier les métriques Spring Actuator et les logs structurés.
+- [x] **9.3 Documentation & Packaging**
+  - [x] Vérifier la documentation OpenAPI / Swagger UI complète.
+  - [x] Rédiger le `README.md` avec guide d'installation et scénario de démonstration.
+  - [x] Vérifier les métriques Spring Actuator et les logs structurés.
 
 ---
 
@@ -340,4 +340,4 @@ gantt
 | **6. Courses & Consommation** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **7. PWA & Synchronisation Offline** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **8. Hardware Simulé** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **9. Sécurité & Scénario Démo E2E** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **9. Sécurité & Scénario Démo E2E** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |

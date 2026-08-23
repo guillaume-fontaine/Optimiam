@@ -39,9 +39,30 @@ public class DataInitializer implements CommandLineRunner {
     private final StockTransactionRepository transactionRepository;
     private final RecipeRepository recipeRepository;
     private final fr.trollgun.optimiam.planning.domain.MealPlanRepository mealPlanRepository;
+    private final fr.trollgun.optimiam.user.domain.UserRepository userRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
+        if (userRepository.count() == 0) {
+            log.info("Création des comptes utilisateurs de démonstration (demo@optimiam.fr, admin@optimiam.fr)...");
+            userRepository.save(fr.trollgun.optimiam.user.domain.User.builder()
+                    .email("demo@optimiam.fr")
+                    .username("Utilisateur Démo")
+                    .password(passwordEncoder.encode("demo123"))
+                    .role(fr.trollgun.optimiam.user.domain.Role.ROLE_USER)
+                    .maxPrepTimeMinutes(30)
+                    .build());
+
+            userRepository.save(fr.trollgun.optimiam.user.domain.User.builder()
+                    .email("admin@optimiam.fr")
+                    .username("Administrateur")
+                    .password(passwordEncoder.encode("admin123"))
+                    .role(fr.trollgun.optimiam.user.domain.Role.ROLE_ADMIN)
+                    .maxPrepTimeMinutes(45)
+                    .build());
+        }
+
         if (categoryRepository.count() == 0) {
             log.info("Initialisation des catégories, produits, stocks, recettes et planning par défaut...");
 

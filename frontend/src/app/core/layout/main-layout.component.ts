@@ -10,6 +10,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
+import { MatMenuModule } from '@angular/material/menu';
+import { AuthService } from '../services/auth.service';
 import { SyncStatusIndicatorComponent } from '../../shared/ui/sync-status-indicator/sync-status-indicator.component';
 
 interface NavItem {
@@ -29,6 +31,7 @@ interface NavItem {
     MatListModule,
     MatIconModule,
     MatButtonModule,
+    MatMenuModule,
     SyncStatusIndicatorComponent
   ],
   templateUrl: './main-layout.component.html',
@@ -37,6 +40,7 @@ interface NavItem {
 export class MainLayoutComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private router = inject(Router);
+  readonly authService = inject(AuthService);
 
   readonly isHandset = toSignal(
     this.breakpointObserver.observe([Breakpoints.Handset]).pipe(

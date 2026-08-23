@@ -8,8 +8,10 @@ import { RecommendationsComponent } from './features/recommendations/recommendat
 import { PlanningComponent } from './features/planning/planning.component';
 import { ShoppingComponent } from './features/shopping/shopping.component';
 import { HardwareComponent } from './features/hardware/hardware.component';
+import { LoginComponent } from './features/auth/login/login.component';
 
 export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
   {
     path: '',
     component: MainLayoutComponent,

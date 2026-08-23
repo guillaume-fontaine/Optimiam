@@ -16,6 +16,9 @@ public class RecommendationRequest {
     private Difficulty difficulty;
     private String tag;
 
-    @Builder.Default
-    private boolean onlyFullStock = false;
+    private Boolean onlyFullStock;
+
+    public boolean isOnlyFullStock() {
+        return Boolean.TRUE.equals(onlyFullStock);
+    }
 }

@@ -37,9 +37,26 @@
       <button mat-icon-button aria-label="Notifications">
         <mat-icon>notifications</mat-icon>
       </button>
-      <button mat-icon-button aria-label="Profil utilisateur">
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="Profil utilisateur">
         <mat-icon>account_circle</mat-icon>
       </button>
+
+      <mat-menu #userMenu="matMenu" xPosition="before">
+        <div class="user-menu-header" *ngIf="authService.currentUser() as user">
+          <strong>{{ user.username }}</strong>
+          <span class="user-menu-email">{{ user.email }}</span>
+          <span class="user-menu-role">{{ user.role === 'ROLE_ADMIN' ? '🛡️ Administrateur' : '👤 Utilisateur' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item routerLink="/login">
+          <mat-icon>switch_account</mat-icon>
+          <span>Changer de compte</span>
+        </button>
+        <button mat-menu-item (click)="authService.logout()">
+          <mat-icon color="warn">logout</mat-icon>
+          <span>Se déconnecter</span>
+        </button>
+      </mat-menu>
     </mat-toolbar>
 
     <main class="page-content">

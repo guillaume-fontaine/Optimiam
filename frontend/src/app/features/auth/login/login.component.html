@@ -1,0 +1,75 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <div class="auth-brand">
+      <mat-icon class="brand-icon">eco</mat-icon>
+      <h1 class="brand-title">OptiMiam</h1>
+      <p class="brand-tagline">Gestion intelligente des stocks & zéro gaspillage alimentaire</p>
+    </div>
+
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+      <!-- ONGLET CONNEXION -->
+      <mat-tab label="Connexion">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Adresse email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="votre@email.fr" />
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" class="submit-btn" [disabled]="loginForm.invalid || isSubmitting">
+            Se connecter
+          </button>
+
+          <!-- Raccourcis Démo pour le Jury -->
+          <div class="demo-shortcuts">
+            <span class="demo-label">Raccourcis démo pour le jury :</span>
+            <div class="demo-buttons">
+              <button mat-stroked-button type="button" (click)="quickLogin('demo')">
+                <mat-icon>person</mat-icon> Utilisateur Démo
+              </button>
+              <button mat-stroked-button type="button" (click)="quickLogin('admin')">
+                <mat-icon>admin_panel_settings</mat-icon> Administrateur
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-tab>
+
+      <!-- ONGLET CRÉATION DE COMPTE -->
+      <mat-tab label="Créer un compte">
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Nom d'utilisateur</mat-label>
+            <input matInput formControlName="username" placeholder="Ex: Thomas" />
+            <mat-icon matPrefix>person</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Adresse email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="votre@email.fr" />
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Mot de passe (6 caractères min.)</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
+            <mat-icon matPrefix>lock</mat-icon>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" class="submit-btn" [disabled]="registerForm.invalid || isSubmitting">
+            Créer mon compte
+          </button>
+        </form>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
