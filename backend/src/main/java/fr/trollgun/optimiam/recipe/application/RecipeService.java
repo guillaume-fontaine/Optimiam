@@ -31,11 +31,11 @@ public class RecipeService {
 
     @Transactional(readOnly = true)
     public PageResponse<RecipeResponse> getRecipes(String query, String tag, Integer maxPrepTime, Difficulty difficulty, Pageable pageable) {
-        String cleanQuery = (query != null && !query.trim().isEmpty()) ? query.trim() : null;
+        String queryPattern = (query != null && !query.trim().isEmpty()) ? "%" + query.trim().toLowerCase() + "%" : null;
         String cleanTag = (tag != null && !tag.trim().isEmpty()) ? tag.trim() : null;
 
         return PageResponse.from(
-                recipeRepository.searchRecipes(cleanQuery, difficulty, maxPrepTime, cleanTag, pageable)
+                recipeRepository.searchRecipes(queryPattern, difficulty, maxPrepTime, cleanTag, pageable)
                         .map(RecipeResponse::from)
         );
     }

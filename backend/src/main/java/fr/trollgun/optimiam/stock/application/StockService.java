@@ -44,8 +44,9 @@ public class StockService {
     @Transactional(readOnly = true)
     public PageResponse<StockItemResponse> getStockItems(Location location, String query, Pageable pageable) {
         LocalDate today = LocalDate.now();
+        String queryPattern = (query != null && !query.trim().isEmpty()) ? "%" + query.trim().toLowerCase() + "%" : null;
         return PageResponse.from(
-                stockItemRepository.searchAvailableStock(location, query, pageable)
+                stockItemRepository.searchAvailableStock(location, queryPattern, pageable)
                         .map(item -> StockItemResponse.from(item, today))
         );
     }

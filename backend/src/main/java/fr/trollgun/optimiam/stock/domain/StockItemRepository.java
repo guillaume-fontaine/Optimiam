@@ -25,8 +25,8 @@ public interface StockItemRepository extends JpaRepository<StockItem, UUID> {
 
     List<StockItem> findByQuantityGreaterThanAndExpirationDateBetweenOrderByExpirationDateAsc(BigDecimal minQuantity, LocalDate start, LocalDate end);
 
-    @Query("SELECT s FROM StockItem s WHERE s.quantity > 0 AND (:location IS NULL OR s.location = :location) AND (:query IS NULL OR LOWER(s.product.name) LIKE LOWER(CONCAT('%', :query, '%')))")
-    Page<StockItem> searchAvailableStock(@Param("location") Location location, @Param("query") String query, Pageable pageable);
+    @Query("SELECT s FROM StockItem s WHERE s.quantity > 0 AND (:location IS NULL OR s.location = :location) AND (:queryPattern IS NULL OR LOWER(s.product.name) LIKE :queryPattern)")
+    Page<StockItem> searchAvailableStock(@Param("location") Location location, @Param("queryPattern") String queryPattern, Pageable pageable);
 
     @Query("SELECT COUNT(s) FROM StockItem s WHERE s.quantity > 0")
     long countAvailableItems();

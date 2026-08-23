@@ -93,3 +93,13 @@ npm start
 
 - **Utilisateur Standard :** `demo@optimiam.fr` / `demo123`
 - **Administrateur :** `admin@optimiam.fr` / `admin123`
+
+---
+
+## 🛠️ Dépannage & Journal des Incidents
+
+Consultez le dossier [**`troubleshooting/`**](file:///var/home/trollgun/IdeaProjects/Optimiam/troubleshooting/README.md) pour retrouver l'historique et les fiches d'analyse détaillées de chaque incident rencontré :
+- [**INC-001** : Absence de compose provider sous Podman](file:///var/home/trollgun/IdeaProjects/Optimiam/troubleshooting/INC-001-podman-compose-provider-missing.md)
+- [**INC-002** : Erreur PostgreSQL `function lower(bytea) does not exist`](file:///var/home/trollgun/IdeaProjects/Optimiam/troubleshooting/INC-002-postgresql-lower-bytea-error.md)
+
+

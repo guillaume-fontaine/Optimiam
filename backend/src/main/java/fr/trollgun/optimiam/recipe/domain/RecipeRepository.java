@@ -15,12 +15,12 @@ import java.util.UUID;
 public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
 
     @Query("SELECT DISTINCT r FROM Recipe r LEFT JOIN r.tags t WHERE " +
-            "(:query IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(r.description) LIKE LOWER(CONCAT('%', :query, '%'))) AND " +
+            "(:queryPattern IS NULL OR LOWER(r.name) LIKE :queryPattern OR LOWER(r.description) LIKE :queryPattern) AND " +
             "(:difficulty IS NULL OR r.difficulty = :difficulty) AND " +
             "(:maxPrepTime IS NULL OR r.preparationTimeMinutes <= :maxPrepTime) AND " +
             "(:tag IS NULL OR t = :tag)")
     Page<Recipe> searchRecipes(
-            @Param("query") String query,
+            @Param("queryPattern") String queryPattern,
             @Param("difficulty") Difficulty difficulty,
             @Param("maxPrepTime") Integer maxPrepTime,
             @Param("tag") String tag,
