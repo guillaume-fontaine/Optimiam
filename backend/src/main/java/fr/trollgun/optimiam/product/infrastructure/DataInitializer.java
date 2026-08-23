@@ -1,10 +1,16 @@
 package fr.trollgun.optimiam.product.infrastructure;
 
+import fr.trollgun.optimiam.nutrition.domain.Nutrition;
 import fr.trollgun.optimiam.product.domain.Category;
 import fr.trollgun.optimiam.product.domain.CategoryRepository;
 import fr.trollgun.optimiam.product.domain.Product;
 import fr.trollgun.optimiam.product.domain.ProductRepository;
 import fr.trollgun.optimiam.product.domain.Unit;
+import fr.trollgun.optimiam.recipe.domain.Difficulty;
+import fr.trollgun.optimiam.recipe.domain.Recipe;
+import fr.trollgun.optimiam.recipe.domain.RecipeIngredient;
+import fr.trollgun.optimiam.recipe.domain.RecipeRepository;
+import fr.trollgun.optimiam.recipe.domain.RecipeStep;
 import fr.trollgun.optimiam.stock.domain.Location;
 import fr.trollgun.optimiam.stock.domain.StockItem;
 import fr.trollgun.optimiam.stock.domain.StockItemRepository;
@@ -20,6 +26,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -30,11 +37,12 @@ public class DataInitializer implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final StockItemRepository stockItemRepository;
     private final StockTransactionRepository transactionRepository;
+    private final RecipeRepository recipeRepository;
 
     @Override
     public void run(String... args) {
         if (categoryRepository.count() == 0) {
-            log.info("Initialisation des catégories et produits par défaut pour OptiMiam...");
+            log.info("Initialisation des catégories, produits, stocks et recettes par défaut...");
 
             Category fruitsLegumes = categoryRepository.save(Category.builder()
                     .name("Fruits & Légumes")
@@ -112,7 +120,10 @@ public class DataInitializer implements CommandLineRunner {
             createInitialStock(oignon, new BigDecimal("1.500"), Unit.KG, today.minusDays(10), today.plusDays(20), Location.PANTRY);
             createInitialStock(riz, new BigDecimal("1.000"), Unit.KG, today.minusDays(20), today.plusDays(300), Location.PANTRY);
 
-            log.info("Catégories, produits et stocks initiaux créés avec succès !");
+            // Initialisation des recettes démo
+            createInitialRecipes(tomate, courgette, oignon, ail, oeufs, fromage, salade, poulet, riz, pates, huile, sel, poivre, beurre);
+
+            log.info("Catégories, produits, stocks et recettes créés avec succès !");
         }
     }
 
@@ -135,5 +146,102 @@ public class DataInitializer implements CommandLineRunner {
                 .unit(unit)
                 .reason("Stock initial démo")
                 .build());
+    }
+
+    private void createInitialRecipes(Product tomate, Product courgette, Product oignon, Product ail,
+                                      Product oeufs, Product fromage, Product salade, Product poulet,
+                                      Product riz, Product pates, Product huile, Product sel, Product poivre, Product beurre) {
+        // 1. Ratatouille provençale
+        Recipe ratatouille = Recipe.builder()
+                .name("Ratatouille provençale")
+                .description("Un grand classique méditerranéen mijoté, idéal pour utiliser les courgettes et tomates mûres.")
+                .preparationTimeMinutes(20)
+                .cookingTimeMinutes(35)
+                .difficulty(Difficulty.EASY)
+                .servings(4)
+                .tags(Set.of("Végétarien", "Anti-gaspi", "Méditerranéen", "Plat chaud"))
+                .nutrition(Nutrition.builder()
+                        .calories(new BigDecimal("185"))
+                        .protein(new BigDecimal("4.2"))
+                        .carbohydrates(new BigDecimal("16.5"))
+                        .fat(new BigDecimal("9.8"))
+                        .fiber(new BigDecimal("5.5"))
+                        .salt(new BigDecimal("1.2"))
+                        .build())
+                .build();
+
+        ratatouille.addIngredient(RecipeIngredient.builder().product(tomate).quantity(new BigDecimal("0.800")).unit(Unit.KG).build());
+        ratatouille.addIngredient(RecipeIngredient.builder().product(courgette).quantity(new BigDecimal("0.500")).unit(Unit.KG).build());
+        ratatouille.addIngredient(RecipeIngredient.builder().product(oignon).quantity(new BigDecimal("0.200")).unit(Unit.KG).build());
+        ratatouille.addIngredient(RecipeIngredient.builder().product(ail).quantity(new BigDecimal("2")).unit(Unit.PIECE).build());
+        ratatouille.addIngredient(RecipeIngredient.builder().product(huile).quantity(new BigDecimal("30")).unit(Unit.ML).build());
+        ratatouille.addIngredient(RecipeIngredient.builder().product(sel).quantity(new BigDecimal("5")).unit(Unit.G).optional(true).build());
+
+        ratatouille.addStep(RecipeStep.builder().stepNumber(1).instruction("Laver les courgettes et tomates, puis les couper en dés réguliers.").durationMinutes(10).build());
+        ratatouille.addStep(RecipeStep.builder().stepNumber(2).instruction("Émincer l'oignon et hacher l'ail. Les faire suer dans une sauteuse avec l'huile d'olive.").durationMinutes(5).build());
+        ratatouille.addStep(RecipeStep.builder().stepNumber(3).instruction("Ajouter les courgettes et cuire 10 minutes à feu moyen.").durationMinutes(10).build());
+        ratatouille.addStep(RecipeStep.builder().stepNumber(4).instruction("Incorporer les tomates, saler, poivrer et laisser mijoter à feu doux à couvert.").durationMinutes(20).build());
+
+        recipeRepository.save(ratatouille);
+
+        // 2. Omelette aux légumes & fromage
+        Recipe omelette = Recipe.builder()
+                .name("Omelette aux légumes & fromage")
+                .description("Une omelette moelleuse et gourmande prête en quelques minutes.")
+                .preparationTimeMinutes(10)
+                .cookingTimeMinutes(10)
+                .difficulty(Difficulty.EASY)
+                .servings(2)
+                .tags(Set.of("Rapide", "Anti-gaspi", "Protéiné", "Express"))
+                .nutrition(Nutrition.builder()
+                        .calories(new BigDecimal("310"))
+                        .protein(new BigDecimal("21.5"))
+                        .carbohydrates(new BigDecimal("4.0"))
+                        .fat(new BigDecimal("23.0"))
+                        .fiber(new BigDecimal("2.1"))
+                        .salt(new BigDecimal("1.5"))
+                        .build())
+                .build();
+
+        omelette.addIngredient(RecipeIngredient.builder().product(oeufs).quantity(new BigDecimal("4")).unit(Unit.PIECE).build());
+        omelette.addIngredient(RecipeIngredient.builder().product(courgette).quantity(new BigDecimal("0.150")).unit(Unit.KG).build());
+        omelette.addIngredient(RecipeIngredient.builder().product(tomate).quantity(new BigDecimal("0.100")).unit(Unit.KG).build());
+        omelette.addIngredient(RecipeIngredient.builder().product(fromage).quantity(new BigDecimal("50")).unit(Unit.G).build());
+        omelette.addIngredient(RecipeIngredient.builder().product(beurre).quantity(new BigDecimal("15")).unit(Unit.G).build());
+
+        omelette.addStep(RecipeStep.builder().stepNumber(1).instruction("Couper la courgette et la tomate en petits dés et les faire sauter avec une noisette de beurre.").durationMinutes(5).build());
+        omelette.addStep(RecipeStep.builder().stepNumber(2).instruction("Battre les œufs en omelette avec sel et poivre, puis verser dans la poêle chaude.").durationMinutes(2).build());
+        omelette.addStep(RecipeStep.builder().stepNumber(3).instruction("Parsemer de fromage râpé et replier l'omelette à la consistance souhaitée.").durationMinutes(3).build());
+
+        recipeRepository.save(omelette);
+
+        // 3. Salade fraîcheur tomate & emmental
+        Recipe saladeTomate = Recipe.builder()
+                .name("Salade fraîcheur tomate & emmental")
+                .description("Une salade croquante et rapide pour un déjeuner léger.")
+                .preparationTimeMinutes(10)
+                .cookingTimeMinutes(0)
+                .difficulty(Difficulty.EASY)
+                .servings(2)
+                .tags(Set.of("Sans cuisson", "Fraîcheur", "Rapide", "Végétarien"))
+                .nutrition(Nutrition.builder()
+                        .calories(new BigDecimal("165"))
+                        .protein(new BigDecimal("6.5"))
+                        .carbohydrates(new BigDecimal("7.0"))
+                        .fat(new BigDecimal("12.0"))
+                        .fiber(new BigDecimal("3.0"))
+                        .salt(new BigDecimal("0.8"))
+                        .build())
+                .build();
+
+        saladeTomate.addIngredient(RecipeIngredient.builder().product(tomate).quantity(new BigDecimal("0.400")).unit(Unit.KG).build());
+        saladeTomate.addIngredient(RecipeIngredient.builder().product(salade).quantity(new BigDecimal("1")).unit(Unit.PIECE).build());
+        saladeTomate.addIngredient(RecipeIngredient.builder().product(fromage).quantity(new BigDecimal("40")).unit(Unit.G).build());
+        saladeTomate.addIngredient(RecipeIngredient.builder().product(huile).quantity(new BigDecimal("15")).unit(Unit.ML).build());
+
+        saladeTomate.addStep(RecipeStep.builder().stepNumber(1).instruction("Laver et essorer la salade verte, trancher les tomates en quartiers.").durationMinutes(5).build());
+        saladeTomate.addStep(RecipeStep.builder().stepNumber(2).instruction("Dresser dans les assiettes, ajouter le fromage râpé et assaisonner avec l'huile d'olive.").durationMinutes(5).build());
+
+        recipeRepository.save(saladeTomate);
     }
 }

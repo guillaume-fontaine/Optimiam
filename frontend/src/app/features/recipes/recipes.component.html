@@ -1,0 +1,128 @@
+<div class="recipes-header">
+  <div>
+    <h1 class="page-title">Catalogue des Recettes 🍳</h1>
+    <p class="page-subtitle">Découvrez de succulentes recettes adaptées à votre stock et vos besoins nutritionnels.</p>
+  </div>
+  <button mat-raised-button color="primary" (click)="openCreateDialog()">
+    <mat-icon>add</mat-icon>
+    Nouvelle Recette
+  </button>
+</div>
+
+<!-- Filtres et Recherche -->
+<mat-card class="toolbar-card">
+  <div class="search-filter-row">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <mat-label>Rechercher une recette par nom ou mot-clé...</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Ex: Ratatouille, Omelette, Pâtes..." />
+      <button mat-icon-button matSuffix *ngIf="searchControl.value" (click)="searchControl.setValue('')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="difficulty-select">
+      <mat-label>Difficulté</mat-label>
+      <mat-select [value]="selectedDifficulty" (valueChange)="onDifficultySelect($event)">
+        <mat-option [value]="null">Toutes</mat-option>
+        <mat-option *ngFor="let d of difficultyOptions" [value]="d.value">{{ d.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Tags populaires -->
+  <div class="tags-chips-container">
+    <span class="filter-label">Thématiques :</span>
+    <mat-chip-listbox aria-label="Sélection de tags">
+      <mat-chip-option [selected]="selectedTag === null" (selectionChange)="onTagSelect(null)">
+        Toutes les recettes
+      </mat-chip-option>
+      <mat-chip-option 
+        *ngFor="let tag of popularTags" 
+        [selected]="selectedTag === tag" 
+        (selectionChange)="onTagSelect(tag)">
+        {{ tag }}
+      </mat-chip-option>
+    </mat-chip-listbox>
+  </div>
+</mat-card>
+
+<!-- Grille des Recettes -->
+<div class="recipes-content-area">
+  <app-loading-spinner *ngIf="isLoading" message="Chargement des recettes..."></app-loading-spinner>
+
+  <ng-container *ngIf="!isLoading">
+    <app-empty-state 
+      *ngIf="recipes.length === 0"
+      icon="restaurant_menu"
+      title="Aucune recette trouvée"
+      description="Aucune recette ne correspond à vos filtres actuels.">
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Créer la première recette
+      </button>
+    </app-empty-state>
+
+    <div class="recipes-grid" *ngIf="recipes.length > 0">
+      <mat-card class="recipe-card" *ngFor="let recipe of recipes" (click)="openDetailDialog(recipe)">
+        <div class="card-top-bar">
+          <div class="recipe-tags-row">
+            <span class="tag-pill" *ngFor="let t of recipe.tags | slice:0:3">{{ t }}</span>
+          </div>
+          <div class="card-menu-actions">
+            <button mat-icon-button (click)="openEditDialog(recipe, $event)" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteRecipe(recipe, $event)" matTooltip="Supprimer">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-main">
+          <h2 class="recipe-name">{{ recipe.name }}</h2>
+          <p class="recipe-description">{{ recipe.description || 'Une délicieuse recette à préparer facilement à la maison.' }}</p>
+        </div>
+
+        <!-- Métadonnées & Temps -->
+        <div class="recipe-meta-row">
+          <div class="meta-item">
+            <mat-icon>timer</mat-icon>
+            <span>{{ recipe.totalTimeMinutes }} min</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>people</mat-icon>
+            <span>{{ recipe.servings }} pers.</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>psychology</mat-icon>
+            <span>{{ recipe.difficultyLabel }}</span>
+          </div>
+        </div>
+
+        <!-- Nutrition & Ingrédients summary -->
+        <div class="recipe-footer">
+          <div class="nutrition-pill" *ngIf="recipe.nutrition?.calories">
+            <mat-icon>local_fire_department</mat-icon>
+            <span>{{ recipe.nutrition?.calories }} kcal / part</span>
+          </div>
+          <div class="ingredients-count">
+            <mat-icon>kitchen</mat-icon>
+            <span>{{ recipe.ingredients.length }} ingrédients</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <mat-paginator 
+      *ngIf="totalElements > pageSize"
+      class="mt-4"
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[6, 12, 24, 48]"
+      (page)="onPageChange($event)"
+      aria-label="Sélectionner la page">
+    </mat-paginator>
+  </ng-container>
+</div>

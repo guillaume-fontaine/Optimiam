@@ -133,28 +133,28 @@ gantt
 
 **Objectif :** Gérer la base de recettes de cuisine, leurs ingrédients associés aux produits, étapes de préparation et valeurs nutritionnelles.
 
-- [ ] **3.1 Backend — Module Recettes & Nutrition (`com.project.nut.recipe` & `com.project.nut.nutrition`)**
-  - [ ] **Domain :**
-    - [ ] Entité `Recipe` (UUID, nom, description, temps de préparation, temps de cuisson, difficulté `EASY/MEDIUM/HARD`, portions, tags/catégories).
-    - [ ] Entité `RecipeIngredient` (UUID, recipe_id, product_id, quantité, unité, optionnel/obligatoire).
-    - [ ] Entité `RecipeStep` (UUID, recipe_id, ordre, instruction, durée).
-    - [ ] Entité `Nutrition` (calories, protéines, glucides, lipides, fibres, sel — liée à `Product` ou `Recipe`).
-    - [ ] Repositories `RecipeRepository`, `NutritionRepository`.
-  - [ ] **Application :**
-    - [ ] CRUD Recettes avec calcul automatique des valeurs nutritionnelles globales par portion.
-    - [ ] Recherche multi-critères (par nom, tag, temps max, ingrédients requis).
-  - [ ] **API :**
-    - [ ] `RecipeController` (`GET /api/v1/recipes`, `POST /api/v1/recipes`, `GET /api/v1/recipes/{id}`, `PUT /api/v1/recipes/{id}`).
-    - [ ] Endpoints de gestion des valeurs nutritionnelles.
-  - [ ] **Tests :**
-    - [ ] Tests unitaires calcul nutritionnel et intégrité recette/ingrédients.
-    - [ ] Tests d'intégration API.
+- [x] **3.1 Backend — Module Recettes & Nutrition (`com.project.nut.recipe` & `com.project.nut.nutrition`)**
+  - [x] **Domain :**
+    - [x] Entité `Recipe` (UUID, nom, description, temps de préparation, temps de cuisson, difficulté `EASY/MEDIUM/HARD`, portions, tags/catégories).
+    - [x] Entité `RecipeIngredient` (UUID, recipe_id, product_id, quantité, unité, optionnel/obligatoire).
+    - [x] Entité `RecipeStep` (UUID, recipe_id, ordre, instruction, durée).
+    - [x] Entité `Nutrition` (calories, protéines, glucides, lipides, fibres, sel — liée à `Product` ou `Recipe`).
+    - [x] Repositories `RecipeRepository`, `NutritionRepository`.
+  - [x] **Application :**
+    - [x] CRUD Recettes avec calcul automatique des valeurs nutritionnelles globales par portion.
+    - [x] Recherche multi-critères (par nom, tag, temps max, ingrédients requis).
+  - [x] **API :**
+    - [x] `RecipeController` (`GET /api/v1/recipes`, `POST /api/v1/recipes`, `GET /api/v1/recipes/{id}`, `PUT /api/v1/recipes/{id}`).
+    - [x] Endpoints de gestion des valeurs nutritionnelles.
+  - [x] **Tests :**
+    - [x] Tests unitaires calcul nutritionnel et intégrité recette/ingrédients.
+    - [x] Tests d'intégration API.
 
-- [ ] **3.2 Frontend — Catalogue & Fiches Recettes (`features/recipes`, `features/nutrition`)**
-  - [ ] Vue catalogue des recettes avec cartes riches (image/icône, temps, difficulté, macros nutritionnelles).
-  - [ ] Fiche détaillée de la recette (liste des ingrédients avec indicateur de disponibilité en stock, étapes pas à pas, tableau nutritionnel).
-  - [ ] Formulaire complet de création/édition d'une recette avec ajout dynamique d'ingrédients et d'étapes.
-  - [ ] Tests unitaires des composants.
+- [x] **3.2 Frontend — Catalogue & Fiches Recettes (`features/recipes`, `features/nutrition`)**
+  - [x] Vue catalogue des recettes avec cartes riches (image/icône, temps, difficulté, macros nutritionnelles).
+  - [x] Fiche détaillée de la recette (liste des ingrédients avec indicateur de disponibilité en stock, étapes pas à pas, tableau nutritionnel).
+  - [x] Formulaire complet de création/édition d'une recette avec ajout dynamique d'ingrédients et d'étapes.
+  - [x] Tests unitaires des composants.
 
 ---
 
@@ -334,7 +334,7 @@ gantt
 | **0. Setup & Architecture** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **1. Produits & Catégories** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **2. Stocks, Mouvements & Pertes** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **3. Recettes & Nutrition** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **3. Recettes & Nutrition** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **4. Moteur Recommandation & Dashboard** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **5. Planning des Repas** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **6. Courses & Consommation** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
