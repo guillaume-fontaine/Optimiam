@@ -25,6 +25,15 @@ export class NotificationService {
     });
   }
 
+  warning(message: string, duration = 4000): void {
+    this.snackBar.open(message, 'Fermer', {
+      duration,
+      panelClass: ['snackbar-warning'],
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
+  }
+
   info(message: string, duration = 3000): void {
     this.snackBar.open(message, 'Fermer', {
       duration,

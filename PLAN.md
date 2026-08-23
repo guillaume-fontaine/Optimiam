@@ -217,32 +217,32 @@ gantt
 
 **Objectif :** Calculer automatiquement la liste de courses (Planning - Stock), permettre de cocher les articles et boucler le flux en consommant le stock.
 
-- [ ] **6.1 Backend — Module Courses & Déduction de Stock (`com.project.nut.shopping`)**
-  - [ ] **Domain :**
-    - [ ] Entité `ShoppingList` (UUID, user_id, statut `ACTIVE/ARCHIVED`, dates).
-    - [ ] Entité `ShoppingListItem` (UUID, shopping_list_id, product_id, quantité requise, unité, checked).
-    - [ ] Repository `ShoppingListRepository`.
-  - [ ] **Application :**
-    - [ ] Service `ShoppingListGenerator` :
-      - [ ] Agrège les ingrédients requis sur la période de planning sélectionnée.
-      - [ ] Soustrait les quantités déjà disponibles en stock.
-      - [ ] Génère les lignes de courses avec les quantités manquantes nettes.
-    - [ ] Use case de validation des achats (transformation d'articles cochés en entrées de stock).
-    - [ ] Use case de consommation de repas (`CookMealUseCase` : déduit les ingrédients de la recette du stock, génère les transactions `CONSUMPTION`).
-  - [ ] **API :**
-    - [ ] `ShoppingListController` (`GET /api/v1/shopping-lists`, `POST /api/v1/shopping-lists/generate`, `PUT /api/v1/shopping-lists/{id}/items/{itemId}`).
-    - [ ] `POST /api/v1/planning/{id}/cook` (déclenche la consommation et la mise à jour de stock).
-  - [ ] **Tests :**
-    - [ ] Tests du calcul différentiel des ingrédients manquants.
-    - [ ] Tests de la déduction automatique de stock.
+- [x] **6.1 Backend — Module Courses & Déduction de Stock (`com.project.nut.shopping`)**
+  - [x] **Domain :**
+    - [x] Entité `ShoppingList` (UUID, user_id, statut `ACTIVE/ARCHIVED`, dates).
+    - [x] Entité `ShoppingListItem` (UUID, shopping_list_id, product_id, quantité requise, unité, checked).
+    - [x] Repository `ShoppingListRepository`.
+  - [x] **Application :**
+    - [x] Service `ShoppingListGenerator` :
+      - [x] Agrège les ingrédients requis sur la période de planning sélectionnée.
+      - [x] Soustrait les quantités déjà disponibles en stock.
+      - [x] Génère les lignes de courses avec les quantités manquantes nettes.
+    - [x] Use case de validation des achats (transformation d'articles cochés en entrées de stock).
+    - [x] Use case de consommation de repas (`CookMealUseCase` : déduit les ingrédients de la recette du stock, génère les transactions `CONSUMPTION`).
+  - [x] **API :**
+    - [x] `ShoppingListController` (`GET /api/v1/shopping-lists`, `POST /api/v1/shopping-lists/generate`, `PUT /api/v1/shopping-lists/{id}/items/{itemId}`).
+    - [x] `POST /api/v1/planning/{id}/cook` (déclenche la consommation et la mise à jour de stock).
+  - [x] **Tests :**
+    - [x] Tests du calcul différentiel des ingrédients manquants.
+    - [x] Tests de la déduction automatique de stock.
 
-- [ ] **6.2 Frontend — Gestion de la Liste de Courses (`features/shopping`)**
-  - [ ] Vue Liste de courses avec regroupement par rayon / catégorie de produit.
-  - [ ] Cases à cocher interactives (`MatCheckbox`).
-  - [ ] Bouton "Générer depuis mon planning de la semaine".
-  - [ ] Bouton "Valider mes achats" (ajoute automatiquement les articles cochés au stock).
-  - [ ] Action "J'ai cuisiné ce repas" depuis le planning ou la recette avec confirmation des quantités déduites.
-  - [ ] Tests unitaires.
+- [x] **6.2 Frontend — Gestion de la Liste de Courses (`features/shopping`)**
+  - [x] Vue Liste de courses avec regroupement par rayon / catégorie de produit.
+  - [x] Cases à cocher interactives (`MatCheckbox`).
+  - [x] Bouton "Générer depuis mon planning de la semaine".
+  - [x] Bouton "Valider mes achats" (ajoute automatiquement les articles cochés au stock).
+  - [x] Action "J'ai cuisiné ce repas" depuis le planning ou la recette avec confirmation des quantités déduites.
+  - [x] Tests unitaires.
 
 ---
 
@@ -337,7 +337,7 @@ gantt
 | **3. Recettes & Nutrition** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **4. Moteur Recommandation & Dashboard** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **5. Planning des Repas** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **6. Courses & Consommation** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **6. Courses & Consommation** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **7. PWA & Synchronisation Offline** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **8. Hardware Simulé** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **9. Sécurité & Scénario Démo E2E** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
