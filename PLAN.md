@@ -193,23 +193,23 @@ gantt
 
 **Objectif :** Permettre la planification des repas (semaine/mois, midi/soir), liée aux recettes sélectionnées ou recommandées.
 
-- [ ] **5.1 Backend — Module Planning (`com.project.nut.planning`)**
-  - [ ] **Domain :**
-    - [ ] Entité `MealPlan` (UUID, user_id, date, meal_type `BREAKFAST/LUNCH/DINNER/SNACK`, recipe_id, nombre de portions, statut `PLANNED/COOKED/CANCELLED`).
-    - [ ] Repository `MealPlanRepository`.
-  - [ ] **Application :**
-    - [ ] Gestion des plannings (ajout, déplacement, suppression, validation d'un repas cuisiné).
-    - [ ] Événement `MealPlanUpdated`, `MealCookedEvent`.
-  - [ ] **API :**
-    - [ ] `MealPlanController` (`GET /api/v1/planning?startDate=...&endDate=...`, `POST /api/v1/planning`, `PUT /api/v1/planning/{id}`, `DELETE /api/v1/planning/{id}`).
-  - [ ] **Tests :**
-    - [ ] Tests unitaires et intégration.
+- [x] **5.1 Backend — Module Planning (`com.project.nut.planning`)**
+  - [x] **Domain :**
+    - [x] Entité `MealPlan` (UUID, user_id, date, meal_type `BREAKFAST/LUNCH/DINNER/SNACK`, recipe_id, nombre de portions, statut `PLANNED/COOKED/CANCELLED`).
+    - [x] Repository `MealPlanRepository`.
+  - [x] **Application :**
+    - [x] Gestion des plannings (ajout, déplacement, suppression, validation d'un repas cuisiné).
+    - [x] Événement `MealPlanUpdated`, `MealCookedEvent`.
+  - [x] **API :**
+    - [x] `MealPlanController` (`GET /api/v1/planning?startDate=...&endDate=...`, `POST /api/v1/planning`, `PUT /api/v1/planning/{id}`, `DELETE /api/v1/planning/{id}`).
+  - [x] **Tests :**
+    - [x] Tests unitaires et intégration.
 
-- [ ] **5.2 Frontend — Vue Calendrier / Planning Hebdomadaire (`features/planning`)**
-  - [ ] Vue Planning hebdomadaire responsive (grille jours / créneaux repas midi et soir).
-  - [ ] Ajout d'une recette au planning (depuis la vue planning ou directement depuis une fiche recette / recommandation).
-  - [ ] Actions sur un repas planifié : Modifier portions, Remplacer recette, Supprimer, Marquer comme cuisiné.
-  - [ ] Tests unitaires des composants.
+- [x] **5.2 Frontend — Vue Calendrier / Planning Hebdomadaire (`features/planning`)**
+  - [x] Vue Planning hebdomadaire responsive (grille jours / créneaux repas midi et soir).
+  - [x] Ajout d'une recette au planning (depuis la vue planning ou directement depuis une fiche recette / recommandation).
+  - [x] Actions sur un repas planifié : Modifier portions, Remplacer recette, Supprimer, Marquer comme cuisiné.
+  - [x] Tests unitaires des composants.
 
 ---
 
@@ -336,7 +336,7 @@ gantt
 | **2. Stocks, Mouvements & Pertes** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **3. Recettes & Nutrition** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **4. Moteur Recommandation & Dashboard** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
-| **5. Planning des Repas** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
+| **5. Planning des Repas** | `[x]` | `[x]` | `[x]` | 🟢 Terminé |
 | **6. Courses & Consommation** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **7. PWA & Synchronisation Offline** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |
 | **8. Hardware Simulé** | `[ ]` | `[ ]` | `[ ]` | ⚪ Non démarré |

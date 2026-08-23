@@ -38,11 +38,12 @@ public class DataInitializer implements CommandLineRunner {
     private final StockItemRepository stockItemRepository;
     private final StockTransactionRepository transactionRepository;
     private final RecipeRepository recipeRepository;
+    private final fr.trollgun.optimiam.planning.domain.MealPlanRepository mealPlanRepository;
 
     @Override
     public void run(String... args) {
         if (categoryRepository.count() == 0) {
-            log.info("Initialisation des catégories, produits, stocks et recettes par défaut...");
+            log.info("Initialisation des catégories, produits, stocks, recettes et planning par défaut...");
 
             Category fruitsLegumes = categoryRepository.save(Category.builder()
                     .name("Fruits & Légumes")
@@ -182,7 +183,7 @@ public class DataInitializer implements CommandLineRunner {
         ratatouille.addStep(RecipeStep.builder().stepNumber(3).instruction("Ajouter les courgettes et cuire 10 minutes à feu moyen.").durationMinutes(10).build());
         ratatouille.addStep(RecipeStep.builder().stepNumber(4).instruction("Incorporer les tomates, saler, poivrer et laisser mijoter à feu doux à couvert.").durationMinutes(20).build());
 
-        recipeRepository.save(ratatouille);
+        Recipe savedRatatouille = recipeRepository.save(ratatouille);
 
         // 2. Omelette aux légumes & fromage
         Recipe omelette = Recipe.builder()
@@ -213,7 +214,7 @@ public class DataInitializer implements CommandLineRunner {
         omelette.addStep(RecipeStep.builder().stepNumber(2).instruction("Battre les œufs en omelette avec sel et poivre, puis verser dans la poêle chaude.").durationMinutes(2).build());
         omelette.addStep(RecipeStep.builder().stepNumber(3).instruction("Parsemer de fromage râpé et replier l'omelette à la consistance souhaitée.").durationMinutes(3).build());
 
-        recipeRepository.save(omelette);
+        Recipe savedOmelette = recipeRepository.save(omelette);
 
         // 3. Salade fraîcheur tomate & emmental
         Recipe saladeTomate = Recipe.builder()
@@ -242,6 +243,35 @@ public class DataInitializer implements CommandLineRunner {
         saladeTomate.addStep(RecipeStep.builder().stepNumber(1).instruction("Laver et essorer la salade verte, trancher les tomates en quartiers.").durationMinutes(5).build());
         saladeTomate.addStep(RecipeStep.builder().stepNumber(2).instruction("Dresser dans les assiettes, ajouter le fromage râpé et assaisonner avec l'huile d'olive.").durationMinutes(5).build());
 
-        recipeRepository.save(saladeTomate);
+        Recipe savedSalade = recipeRepository.save(saladeTomate);
+
+        // Planning des repas initiaux
+        LocalDate today = LocalDate.now();
+        mealPlanRepository.save(fr.trollgun.optimiam.planning.domain.MealPlan.builder()
+                .date(today)
+                .mealType(fr.trollgun.optimiam.planning.domain.MealType.LUNCH)
+                .recipe(savedSalade)
+                .servings(2)
+                .status(fr.trollgun.optimiam.planning.domain.MealPlanStatus.PLANNED)
+                .notes("Déjeuner rapide midi")
+                .build());
+
+        mealPlanRepository.save(fr.trollgun.optimiam.planning.domain.MealPlan.builder()
+                .date(today)
+                .mealType(fr.trollgun.optimiam.planning.domain.MealType.DINNER)
+                .recipe(savedRatatouille)
+                .servings(4)
+                .status(fr.trollgun.optimiam.planning.domain.MealPlanStatus.PLANNED)
+                .notes("Dîner convivial anti-gaspi")
+                .build());
+
+        mealPlanRepository.save(fr.trollgun.optimiam.planning.domain.MealPlan.builder()
+                .date(today.plusDays(1))
+                .mealType(fr.trollgun.optimiam.planning.domain.MealType.LUNCH)
+                .recipe(savedOmelette)
+                .servings(2)
+                .status(fr.trollgun.optimiam.planning.domain.MealPlanStatus.PLANNED)
+                .notes("Omelette express")
+                .build());
     }
 }

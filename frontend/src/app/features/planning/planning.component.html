@@ -1,0 +1,124 @@
+<div class="planning-header">
+  <div>
+    <h1 class="page-title">Planning des Repas 📅</h1>
+    <p class="page-subtitle">Organisez votre semaine culinaire, équilibrez vos menus et cuisinez vos ingrédients à temps.</p>
+  </div>
+  <button mat-raised-button color="primary" (click)="openPlanDialog()">
+    <mat-icon>add</mat-icon>
+    Planifier un Repas
+  </button>
+</div>
+
+<!-- Barre de Navigation Hebdomadaire -->
+<mat-card class="nav-card">
+  <div class="nav-controls">
+    <button mat-icon-button (click)="previousWeek()" matTooltip="Semaine précédente">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-stroked-button (click)="goToToday()">
+      Aujourd'hui
+    </button>
+    <button mat-icon-button (click)="nextWeek()" matTooltip="Semaine suivante">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+  <h2 class="week-label">{{ getWeekRangeLabel() }}</h2>
+</mat-card>
+
+<app-loading-spinner *ngIf="isLoading" message="Chargement du planning de la semaine..."></app-loading-spinner>
+
+<!-- Grille des 7 Jours de la Semaine -->
+<div class="week-grid" *ngIf="!isLoading">
+  <div class="day-column" *ngFor="let day of dayColumns" [class.today-col]="day.isToday">
+    <!-- En-tête du Jour -->
+    <div class="day-header">
+      <div class="day-titles">
+        <span class="day-name">{{ day.dayName }}</span>
+        <span class="day-number">{{ day.dayNumber }}</span>
+      </div>
+      <span class="today-tag" *ngIf="day.isToday">Aujourd'hui</span>
+    </div>
+
+    <!-- Créneau 1 : ☀️ Déjeuner (Midi) -->
+    <div class="slot-container">
+      <div class="slot-title">
+        <mat-icon class="slot-icon sun-icon">wb_sunny</mat-icon>
+        <span>Midi</span>
+      </div>
+
+      <!-- Si Repas Planifié -->
+      <div class="meal-card" *ngIf="day.lunchMeal" [class.is-cooked]="day.lunchMeal.status === 'COOKED'">
+        <div class="card-header">
+          <span class="status-badge" [class.badge-cooked]="day.lunchMeal.status === 'COOKED'">
+            {{ day.lunchMeal.statusLabel }}
+          </span>
+          <button mat-icon-button class="del-btn" (click)="deletePlan(day.lunchMeal)" matTooltip="Supprimer">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <h3 class="meal-recipe-name" (click)="openRecipeDetail(day.lunchMeal)">
+          {{ day.lunchMeal.recipe.name }}
+        </h3>
+
+        <div class="meal-meta">
+          <span><mat-icon>people</mat-icon> {{ day.lunchMeal.servings }} pers.</span>
+          <span><mat-icon>timer</mat-icon> {{ day.lunchMeal.recipe.totalTimeMinutes }} min</span>
+        </div>
+
+        <div class="meal-actions" *ngIf="day.lunchMeal.status !== 'COOKED'">
+          <button mat-flat-button color="primary" class="cook-btn" (click)="markAsCooked(day.lunchMeal)">
+            <mat-icon>check</mat-icon> Cuisiner
+          </button>
+        </div>
+      </div>
+
+      <!-- Si Créneau Vide -->
+      <div class="empty-slot" *ngIf="!day.lunchMeal" (click)="openPlanDialog(day.dateString, 'LUNCH')">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Ajouter déjeuner</span>
+      </div>
+    </div>
+
+    <!-- Créneau 2 : 🌙 Dîner (Soir) -->
+    <div class="slot-container">
+      <div class="slot-title">
+        <mat-icon class="slot-icon moon-icon">nights_stay</mat-icon>
+        <span>Soir</span>
+      </div>
+
+      <!-- Si Repas Planifié -->
+      <div class="meal-card" *ngIf="day.dinnerMeal" [class.is-cooked]="day.dinnerMeal.status === 'COOKED'">
+        <div class="card-header">
+          <span class="status-badge" [class.badge-cooked]="day.dinnerMeal.status === 'COOKED'">
+            {{ day.dinnerMeal.statusLabel }}
+          </span>
+          <button mat-icon-button class="del-btn" (click)="deletePlan(day.dinnerMeal)" matTooltip="Supprimer">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <h3 class="meal-recipe-name" (click)="openRecipeDetail(day.dinnerMeal)">
+          {{ day.dinnerMeal.recipe.name }}
+        </h3>
+
+        <div class="meal-meta">
+          <span><mat-icon>people</mat-icon> {{ day.dinnerMeal.servings }} pers.</span>
+          <span><mat-icon>timer</mat-icon> {{ day.dinnerMeal.recipe.totalTimeMinutes }} min</span>
+        </div>
+
+        <div class="meal-actions" *ngIf="day.dinnerMeal.status !== 'COOKED'">
+          <button mat-flat-button color="primary" class="cook-btn" (click)="markAsCooked(day.dinnerMeal)">
+            <mat-icon>check</mat-icon> Cuisiner
+          </button>
+        </div>
+      </div>
+
+      <!-- Si Créneau Vide -->
+      <div class="empty-slot" *ngIf="!day.dinnerMeal" (click)="openPlanDialog(day.dateString, 'DINNER')">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Ajouter dîner</span>
+      </div>
+    </div>
+  </div>
+</div>
