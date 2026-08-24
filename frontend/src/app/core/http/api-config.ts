@@ -1,3 +1,3 @@
 export const API_CONFIG = {
-  baseUrl: '/api'
+  baseUrl: '/api/v1'
 };
