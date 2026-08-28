@@ -1,17 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ReactiveFormsModule, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MEAL_TYPE_OPTIONS, MealType } from '../../../core/models/planning.model';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { CreateMealPlanRequest, MealPlan, MEAL_TYPE_OPTIONS, MealType } from '../../../core/models/planning.model';
 import { Recipe } from '../../../core/models/recipe.model';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { PlanningService } from '../../../core/services/planning.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { MealPlanConflictDialogComponent } from './meal-plan-conflict-dialog.component';
+import { forkJoin, switchMap } from 'rxjs';
 
 export interface MealPlanDialogData {
   initialDate?: string;
@@ -19,9 +23,43 @@ export interface MealPlanDialogData {
   initialRecipeId?: string;
 }
 
+function notPastDateValidator(): ValidatorFn {
+  return (control): ValidationErrors | null => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return control.value && control.value < today ? { pastDate: true } : null;
+  };
+}
+
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatLocalDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+const FRENCH_DATE_FORMATS = {
+  parse: { dateInput: 'DD/MM/YYYY' },
+  display: {
+    dateInput: 'dd/MM/yyyy',
+    monthYearLabel: 'MMMM yyyy',
+    dateA11yLabel: 'dd/MM/yyyy',
+    monthYearA11yLabel: 'MMMM yyyy'
+  }
+};
+
 @Component({
   selector: 'app-meal-plan-dialog',
   standalone: true,
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: MAT_DATE_FORMATS, useValue: FRENCH_DATE_FORMATS }
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -30,7 +68,9 @@ export interface MealPlanDialogData {
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   template: `
     <h2 mat-dialog-title>
@@ -43,8 +83,12 @@ export interface MealPlanDialogData {
         <div class="form-row">
           <mat-form-field appearance="outline" class="half-width">
             <mat-label>Date du repas *</mat-label>
-            <input matInput type="date" formControlName="date" />
+            <input matInput [matDatepicker]="datePicker" formControlName="date" [min]="today"
+              (click)="datePicker.open()" (focus)="datePicker.open()" />
+            <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
             <mat-error *ngIf="form.get('date')?.hasError('required')">La date est obligatoire</mat-error>
+            <mat-error *ngIf="form.get('date')?.hasError('pastDate')">La date doit être aujourd'hui ou ultérieure</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="half-width">
@@ -126,16 +170,20 @@ export class MealPlanDialogComponent implements OnInit {
   private recipeService = inject(RecipeService);
   private planningService = inject(PlanningService);
   private notificationService = inject(NotificationService);
+  private dateAdapter = inject(DateAdapter<Date>);
 
   form!: FormGroup;
   recipes: Recipe[] = [];
-  mealTypeOptions = MEAL_TYPE_OPTIONS;
+  mealTypeOptions = MEAL_TYPE_OPTIONS.filter(option => option.value === 'LUNCH' || option.value === 'DINNER');
   isSubmitting = false;
+  today = new Date();
+  private dialog = inject(MatDialog);
 
   ngOnInit(): void {
-    const todayStr = new Date().toISOString().split('T')[0];
+    this.dateAdapter.setLocale('fr-FR');
+    this.today.setHours(0, 0, 0, 0);
     this.form = this.fb.group({
-      date: [this.data?.initialDate || todayStr, Validators.required],
+      date: [this.data?.initialDate ? parseLocalDate(this.data.initialDate) : this.today, [Validators.required, notPastDateValidator()]],
       mealType: [this.data?.initialMealType || 'LUNCH', Validators.required],
       recipeId: [this.data?.initialRecipeId || null, Validators.required],
       servings: [4, [Validators.required, Validators.min(1)]],
@@ -167,9 +215,49 @@ export class MealPlanDialogComponent implements OnInit {
     if (this.form.invalid) return;
 
     this.isSubmitting = true;
-    this.planningService.createMealPlan(this.form.value).subscribe({
+    const formValue = this.form.value;
+    const request: CreateMealPlanRequest = { ...formValue, date: formatLocalDate(formValue.date) };
+    this.planningService.getMealPlans(request.date, request.date).subscribe({
+      next: (meals) => {
+        const conflicts = meals.filter(meal => meal.mealType === request.mealType);
+        if (conflicts.length === 0) {
+          this.createMealPlan(request);
+          return;
+        }
+
+        const conflictDialog = this.dialog.open(MealPlanConflictDialogComponent, {
+          width: '460px',
+          data: { existingMeals: conflicts }
+        });
+
+        conflictDialog.afterClosed().subscribe((action) => {
+          if (action === 'replace') {
+            this.replaceMealPlans(conflicts, request);
+          } else {
+            this.isSubmitting = false;
+          }
+        });
+      },
+      error: () => this.isSubmitting = false
+    });
+  }
+
+  private createMealPlan(request: CreateMealPlanRequest): void {
+    this.planningService.createMealPlan(request).subscribe({
       next: (created) => {
         this.notificationService.success(`Repas "${created.recipe.name}" planifié avec succès`);
+        this.dialogRef.close(created);
+      },
+      error: () => this.isSubmitting = false
+    });
+  }
+
+  private replaceMealPlans(existingMeals: MealPlan[], request: CreateMealPlanRequest): void {
+    forkJoin(existingMeals.map(meal => this.planningService.deleteMealPlan(meal.id))).pipe(
+      switchMap(() => this.planningService.createMealPlan(request))
+    ).subscribe({
+      next: (created) => {
+        this.notificationService.success(`Repas "${created.recipe.name}" planifié en remplacement de l'ancien`);
         this.dialogRef.close(created);
       },
       error: () => this.isSubmitting = false
