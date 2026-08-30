@@ -1,0 +1,16 @@
+{
+  "name": "OptiMiam — Gestion Anti-Gaspi Intelligente",
+  "short_name": "OptiMiam",
+  "description": "Application PWA anti-gaspillage alimentaire, gestion des stocks, recettes et planning",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
