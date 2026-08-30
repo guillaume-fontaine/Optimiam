@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -32,6 +33,7 @@ export interface CategoryGroup {
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
+    MatInputModule,
     MatProgressBarModule,
     MatDialogModule,
     MatTooltipModule,
@@ -87,23 +89,58 @@ export class ShoppingComponent implements OnInit {
       groupsMap.get(catName)!.items.push(item);
     }
 
-    this.categoryGroups = Array.from(groupsMap.entries()).map(([name, data]) => ({
-      categoryName: name,
-      categoryIcon: data.icon,
-      items: data.items
-    }));
+    this.categoryGroups = Array.from(groupsMap.entries())
+      .sort(([nameA], [nameB]) => nameA.localeCompare(nameB, 'fr'))
+      .map(([name, data]) => ({
+        categoryName: name,
+        categoryIcon: data.icon,
+        items: [...data.items].sort((a, b) => a.product.name.localeCompare(b.product.name, 'fr'))
+      }));
   }
 
   toggleItem(item: ShoppingListItem): void {
     if (!this.activeList) return;
     const newChecked = !item.checked;
 
-    this.shoppingService.updateItem(this.activeList.id, item.id, { checked: newChecked }).subscribe({
+    this.shoppingService.updateItem(this.activeList.id, item.id, {
+      checked: newChecked,
+      purchasedQuantity: item.purchasedQuantity
+    }).subscribe({
       next: (updatedList) => {
         this.activeList = updatedList;
         this.groupItemsByCategory();
       }
     });
+  }
+
+  updatePurchasedQuantity(item: ShoppingListItem, event: Event): void {
+    if (!this.activeList) return;
+
+    const input = event.target as HTMLInputElement;
+    const purchasedQuantity = Number(input.value);
+    if (!Number.isFinite(purchasedQuantity) || purchasedQuantity <= 0) return;
+
+    item.purchasedQuantity = purchasedQuantity;
+    this.shoppingService.updateItem(this.activeList.id, item.id, { purchasedQuantity }).subscribe({
+      next: (updatedList) => {
+        this.activeList = updatedList;
+        this.groupItemsByCategory();
+      }
+    });
+  }
+
+  quantityStep(unit: string): number {
+    switch (unit) {
+      case 'PIECE':
+        return 1;
+      case 'KG':
+        return 0.5;
+      case 'G':
+      case 'ML':
+        return 50;
+      default:
+        return 1;
+    }
   }
 
   openAddItemDialog(): void {

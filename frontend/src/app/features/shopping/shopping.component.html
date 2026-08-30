@@ -44,7 +44,7 @@
   </mat-card>
 
   <!-- État vide si 0 articles -->
-  <app-empty-state 
+  <app-empty-state
     *ngIf="!activeList || activeList.items.length === 0"
     icon="shopping_basket"
     title="Votre liste de courses est vide"
@@ -78,9 +78,16 @@
 
           <div class="item-right">
             <div class="qty-badge" [class.qty-checked]="item.checked">
-              <span class="qty-label">À acheter :</span>
+              <span class="qty-label">Prévu :</span>
               <strong>{{ item.missingQuantity }} {{ item.unitSymbol }}</strong>
             </div>
+            <mat-form-field appearance="outline" class="purchased-qty-field">
+              <mat-label>Acheté</mat-label>
+              <input matInput type="number" min="0" [step]="quantityStep(item.unit)"
+                [value]="item.purchasedQuantity ?? item.missingQuantity"
+                (change)="updatePurchasedQuantity(item, $event)" />
+              <span matTextSuffix>{{ item.unitSymbol }}</span>
+            </mat-form-field>
           </div>
         </div>
       </div>

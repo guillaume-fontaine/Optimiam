@@ -18,6 +18,7 @@ public class ShoppingListItemResponse {
     private BigDecimal requiredQuantity;
     private BigDecimal stockQuantity;
     private BigDecimal missingQuantity;
+    private BigDecimal purchasedQuantity;
     private Unit unit;
     private String unitSymbol;
     private boolean checked;
@@ -33,6 +34,7 @@ public class ShoppingListItemResponse {
                 .requiredQuantity(item.getRequiredQuantity())
                 .stockQuantity(item.getStockQuantity())
                 .missingQuantity(item.getMissingQuantity())
+                .purchasedQuantity(item.getPurchasedQuantity())
                 .unit(item.getUnit())
                 .unitSymbol(item.getUnit() != null ? item.getUnit().getSymbol() : null)
                 .checked(item.isChecked())
