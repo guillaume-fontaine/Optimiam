@@ -210,6 +210,9 @@ public class ShoppingListService {
         if (request.getQuantity() != null) {
             item.setMissingQuantity(request.getQuantity());
         }
+        if (request.getPurchasedQuantity() != null) {
+            item.setPurchasedQuantity(request.getPurchasedQuantity());
+        }
         if (request.getChecked() != null) {
             item.setChecked(request.getChecked());
         }
@@ -226,6 +229,7 @@ public class ShoppingListService {
                 .collect(Collectors.toList());
 
         int addedCount = 0;
+        List<ShoppingListItem> completedItems = new ArrayList<>();
         for (ShoppingListItem item : checkedItems) {
             Product product = item.getProduct();
             int shelfLife = (product.getAverageShelfLifeDays() != null && product.getAverageShelfLifeDays() > 0)
@@ -239,16 +243,34 @@ public class ShoppingListService {
 
             stockService.createStockEntry(CreateStockEntryRequest.builder()
                     .productId(product.getId())
-                    .quantity(item.getMissingQuantity())
+                    .quantity(item.getPurchasedQuantity() != null
+                        ? item.getPurchasedQuantity()
+                        : item.getMissingQuantity())
                     .unit(item.getUnit())
                     .entryDate(LocalDate.now())
                     .expirationDate(LocalDate.now().plusDays(shelfLife))
                     .location(location)
                     .build());
             addedCount++;
+
+            BigDecimal purchasedQuantity = item.getPurchasedQuantity() != null
+                    ? item.getPurchasedQuantity()
+                    : item.getMissingQuantity();
+            if (purchasedQuantity.compareTo(item.getMissingQuantity()) >= 0) {
+                completedItems.add(item);
+            } else {
+                item.setMissingQuantity(item.getMissingQuantity().subtract(purchasedQuantity)
+                        .max(BigDecimal.ZERO)
+                        .setScale(2, RoundingMode.HALF_UP));
+                item.setPurchasedQuantity(null);
+                item.setChecked(false);
+            }
         }
 
-        list.setStatus(ShoppingListStatus.COMPLETED);
+        completedItems.forEach(list::removeItem);
+        list.setStatus(list.getItems().isEmpty()
+            ? ShoppingListStatus.COMPLETED
+            : ShoppingListStatus.ACTIVE);
         ShoppingList saved = shoppingListRepository.save(list);
         domainEventPublisher.publish(new PurchasesValidatedEvent(saved, addedCount));
         log.info("Validation des achats effectuée : {} articles transférés en stock", addedCount);

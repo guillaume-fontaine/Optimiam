@@ -172,6 +172,10 @@
         }
 
         .item-right {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
           .qty-badge {
             background-color: #e0f2fe;
             color: #0284c7;
@@ -188,6 +192,11 @@
               background-color: #dcfce7;
               color: #15803d;
             }
+          }
+
+          .purchased-qty-field {
+            width: 130px;
+            font-size: 0.85rem;
           }
         }
       }

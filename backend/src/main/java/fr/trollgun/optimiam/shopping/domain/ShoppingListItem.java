@@ -45,6 +45,9 @@ public class ShoppingListItem {
     @Column(nullable = false, precision = 10, scale = 3)
     private BigDecimal missingQuantity;
 
+    @Column(precision = 10, scale = 3)
+    private BigDecimal purchasedQuantity;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Unit unit;
