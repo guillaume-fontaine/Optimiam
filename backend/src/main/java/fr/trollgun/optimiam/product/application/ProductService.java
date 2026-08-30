@@ -85,6 +85,7 @@ public class ProductService {
                 .name(request.getName().trim())
                 .barcode(request.getBarcode())
                 .defaultUnit(request.getDefaultUnit())
+            .defaultLocation(request.getDefaultLocation())
                 .category(category)
                 .averageShelfLifeDays(request.getAverageShelfLifeDays())
                 .imageUrl(request.getImageUrl())
@@ -108,6 +109,7 @@ public class ProductService {
         product.setName(request.getName().trim());
         product.setBarcode(request.getBarcode());
         product.setDefaultUnit(request.getDefaultUnit());
+        product.setDefaultLocation(request.getDefaultLocation());
         product.setCategory(category);
         product.setAverageShelfLifeDays(request.getAverageShelfLifeDays());
         product.setImageUrl(request.getImageUrl());
