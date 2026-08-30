@@ -109,28 +109,28 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
 
             // Produits initiaux
-            Product tomate = productRepository.save(Product.builder().name("Tomate").barcode("300001").defaultUnit(Unit.KG).category(fruitsLegumes).averageShelfLifeDays(6).build());
-            Product courgette = productRepository.save(Product.builder().name("Courgette").barcode("300002").defaultUnit(Unit.KG).category(fruitsLegumes).averageShelfLifeDays(7).build());
-            Product oignon = productRepository.save(Product.builder().name("Oignon jaune").barcode("300003").defaultUnit(Unit.KG).category(fruitsLegumes).averageShelfLifeDays(30).build());
-            Product ail = productRepository.save(Product.builder().name("Ail").barcode("300004").defaultUnit(Unit.PIECE).category(fruitsLegumes).averageShelfLifeDays(60).build());
-            Product salade = productRepository.save(Product.builder().name("Salade verte").barcode("300005").defaultUnit(Unit.PIECE).category(fruitsLegumes).averageShelfLifeDays(4).build());
-            Product pomme = productRepository.save(Product.builder().name("Pomme").barcode("300006").defaultUnit(Unit.KG).category(fruitsLegumes).averageShelfLifeDays(15).build());
+            Product tomate = productRepository.save(Product.builder().name("Tomate").barcode("300001").defaultUnit(Unit.KG).defaultLocation(Location.FRIDGE).category(fruitsLegumes).averageShelfLifeDays(6).build());
+            Product courgette = productRepository.save(Product.builder().name("Courgette").barcode("300002").defaultUnit(Unit.KG).defaultLocation(Location.FRIDGE).category(fruitsLegumes).averageShelfLifeDays(7).build());
+            Product oignon = productRepository.save(Product.builder().name("Oignon jaune").barcode("300003").defaultUnit(Unit.KG).defaultLocation(Location.PANTRY).category(fruitsLegumes).averageShelfLifeDays(30).build());
+            Product ail = productRepository.save(Product.builder().name("Ail").barcode("300004").defaultUnit(Unit.PIECE).defaultLocation(Location.PANTRY).category(fruitsLegumes).averageShelfLifeDays(60).build());
+            Product salade = productRepository.save(Product.builder().name("Salade verte").barcode("300005").defaultUnit(Unit.PIECE).defaultLocation(Location.FRIDGE).category(fruitsLegumes).averageShelfLifeDays(4).build());
+            Product pomme = productRepository.save(Product.builder().name("Pomme").barcode("300006").defaultUnit(Unit.KG).defaultLocation(Location.PANTRY).category(fruitsLegumes).averageShelfLifeDays(15).build());
 
-            Product oeufs = productRepository.save(Product.builder().name("Œufs frais").barcode("300010").defaultUnit(Unit.PIECE).category(produitsLaitiers).averageShelfLifeDays(21).build());
-            Product fromage = productRepository.save(Product.builder().name("Fromage râpé (Emmental)").barcode("300011").defaultUnit(Unit.G).category(produitsLaitiers).averageShelfLifeDays(25).build());
-            Product lait = productRepository.save(Product.builder().name("Lait demi-écrémé").barcode("300012").defaultUnit(Unit.L).category(produitsLaitiers).averageShelfLifeDays(60).build());
-            Product beurre = productRepository.save(Product.builder().name("Beurre doux").barcode("300013").defaultUnit(Unit.G).category(produitsLaitiers).averageShelfLifeDays(45).build());
+            Product oeufs = productRepository.save(Product.builder().name("Œufs frais").barcode("300010").defaultUnit(Unit.PIECE).defaultLocation(Location.FRIDGE).category(produitsLaitiers).averageShelfLifeDays(21).build());
+            Product fromage = productRepository.save(Product.builder().name("Fromage râpé (Emmental)").barcode("300011").defaultUnit(Unit.G).defaultLocation(Location.FRIDGE).category(produitsLaitiers).averageShelfLifeDays(25).build());
+            Product lait = productRepository.save(Product.builder().name("Lait demi-écrémé").barcode("300012").defaultUnit(Unit.L).defaultLocation(Location.FRIDGE).category(produitsLaitiers).averageShelfLifeDays(60).build());
+            Product beurre = productRepository.save(Product.builder().name("Beurre doux").barcode("300013").defaultUnit(Unit.G).defaultLocation(Location.FRIDGE).category(produitsLaitiers).averageShelfLifeDays(45).build());
 
-            Product poulet = productRepository.save(Product.builder().name("Blanc de poulet").barcode("300020").defaultUnit(Unit.KG).category(viandesPoissons).averageShelfLifeDays(5).build());
-            Product saumon = productRepository.save(Product.builder().name("Pavé de saumon").barcode("300021").defaultUnit(Unit.G).category(viandesPoissons).averageShelfLifeDays(3).build());
+            Product poulet = productRepository.save(Product.builder().name("Blanc de poulet").barcode("300020").defaultUnit(Unit.KG).defaultLocation(Location.FRIDGE).category(viandesPoissons).averageShelfLifeDays(5).build());
+            Product saumon = productRepository.save(Product.builder().name("Pavé de saumon").barcode("300021").defaultUnit(Unit.G).defaultLocation(Location.FRIDGE).category(viandesPoissons).averageShelfLifeDays(3).build());
 
-            Product riz = productRepository.save(Product.builder().name("Riz basmati").barcode("300030").defaultUnit(Unit.KG).category(feculents).averageShelfLifeDays(365).build());
-            Product pates = productRepository.save(Product.builder().name("Pâtes Penne").barcode("300031").defaultUnit(Unit.G).category(feculents).averageShelfLifeDays(365).build());
-            Product farine = productRepository.save(Product.builder().name("Farine de blé").barcode("300032").defaultUnit(Unit.KG).category(feculents).averageShelfLifeDays(180).build());
+            Product riz = productRepository.save(Product.builder().name("Riz basmati").barcode("300030").defaultUnit(Unit.KG).defaultLocation(Location.PANTRY).category(feculents).averageShelfLifeDays(365).build());
+            Product pates = productRepository.save(Product.builder().name("Pâtes Penne").barcode("300031").defaultUnit(Unit.G).defaultLocation(Location.PANTRY).category(feculents).averageShelfLifeDays(365).build());
+            Product farine = productRepository.save(Product.builder().name("Farine de blé").barcode("300032").defaultUnit(Unit.KG).defaultLocation(Location.PANTRY).category(feculents).averageShelfLifeDays(180).build());
 
-            Product huile = productRepository.save(Product.builder().name("Huile d'olive").barcode("300040").defaultUnit(Unit.ML).category(epicerie).averageShelfLifeDays(365).build());
-            Product sel = productRepository.save(Product.builder().name("Sel fin").barcode("300041").defaultUnit(Unit.G).category(epicerie).averageShelfLifeDays(730).build());
-            Product poivre = productRepository.save(Product.builder().name("Poivre noir moulu").barcode("300042").defaultUnit(Unit.G).category(epicerie).averageShelfLifeDays(730).build());
+            Product huile = productRepository.save(Product.builder().name("Huile d'olive").barcode("300040").defaultUnit(Unit.ML).defaultLocation(Location.PANTRY).category(epicerie).averageShelfLifeDays(365).build());
+            Product sel = productRepository.save(Product.builder().name("Sel fin").barcode("300041").defaultUnit(Unit.G).defaultLocation(Location.PANTRY).category(epicerie).averageShelfLifeDays(730).build());
+            Product poivre = productRepository.save(Product.builder().name("Poivre noir moulu").barcode("300042").defaultUnit(Unit.G).defaultLocation(Location.PANTRY).category(epicerie).averageShelfLifeDays(730).build());
 
             // Initialisation de stocks de test conformes à OptiMiam.md section 19
             LocalDate today = LocalDate.now();

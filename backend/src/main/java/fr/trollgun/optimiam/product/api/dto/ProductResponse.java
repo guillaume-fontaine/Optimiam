@@ -17,6 +17,9 @@ public class ProductResponse {
     private Unit defaultUnit;
     private String unitLabel;
     private String unitSymbol;
+    private fr.trollgun.optimiam.stock.domain.Location defaultLocation;
+    private String defaultLocationLabel;
+    private String defaultLocationIcon;
     private CategoryResponse category;
     private Integer averageShelfLifeDays;
     private String imageUrl;
@@ -35,6 +38,9 @@ public class ProductResponse {
                 .category(CategoryResponse.from(product.getCategory()))
                 .averageShelfLifeDays(product.getAverageShelfLifeDays())
                 .imageUrl(product.getImageUrl())
+                .defaultLocation(product.getDefaultLocation())
+                .defaultLocationLabel(product.getDefaultLocation() != null ? product.getDefaultLocation().getLabel() : null)
+                .defaultLocationIcon(product.getDefaultLocation() != null ? product.getDefaultLocation().getIcon() : null)
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();

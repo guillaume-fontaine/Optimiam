@@ -1,6 +1,7 @@
 package fr.trollgun.optimiam.product.api.dto;
 
 import fr.trollgun.optimiam.product.domain.Unit;
+import fr.trollgun.optimiam.stock.domain.Location;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,4 +36,6 @@ public class CreateProductRequest {
 
     @Size(max = 500, message = "L'URL de l'image ne peut pas dépasser 500 caractères")
     private String imageUrl;
+
+    private Location defaultLocation;
 }

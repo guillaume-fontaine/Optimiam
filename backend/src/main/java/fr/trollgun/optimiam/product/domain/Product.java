@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
+import fr.trollgun.optimiam.stock.domain.Location;
 
 @Entity
 @Table(name = "products")
@@ -42,6 +43,10 @@ public class Product {
 
     @Column(length = 500)
     private String imageUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "default_location", length = 50)
+    private Location defaultLocation;
 
     @Column(nullable = false)
     @Builder.Default
