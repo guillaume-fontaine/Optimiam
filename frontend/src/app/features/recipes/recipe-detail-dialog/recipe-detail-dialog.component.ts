@@ -6,9 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { Recipe } from '../../../core/models/recipe.model';
-import { StockService } from '../../../core/services/stock.service';
-import { NotificationService } from '../../../core/services/notification.service';
 
 export interface RecipeDetailDialogData {
   recipe: Recipe;
@@ -155,9 +154,9 @@ export interface RecipeDetailDialogData {
 
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>Fermer</button>
-      <button mat-raised-button color="primary" (click)="cookRecipe()">
-        <mat-icon>restaurant</mat-icon>
-        Cuisiner ce plat
+      <button mat-raised-button color="primary" (click)="planRecipe()">
+        <mat-icon>calendar_month</mat-icon>
+        Planifier ce plat
       </button>
     </mat-dialog-actions>
   `,
@@ -341,7 +340,7 @@ export interface RecipeDetailDialogData {
 export class RecipeDetailDialogComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<RecipeDetailDialogComponent>);
   readonly data: RecipeDetailDialogData = inject(MAT_DIALOG_DATA);
-  private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   recipe!: Recipe;
   currentServings = 4;
@@ -362,8 +361,8 @@ export class RecipeDetailDialogComponent implements OnInit {
     return Math.round(scaled * 100) / 100;
   }
 
-  cookRecipe(): void {
-    this.notificationService.success(`Bon appétit ! Recette "${this.recipe.name}" prête à cuisiner.`);
+  planRecipe(): void {
     this.dialogRef.close();
+    this.router.navigate(['/planning'], { queryParams: { recipeId: this.recipe.id } });
   }
 }

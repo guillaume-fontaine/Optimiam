@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute } from '@angular/router';
 
 import { MealPlan, MealType } from '../../core/models/planning.model';
 import { PlanningService } from '../../core/services/planning.service';
@@ -14,6 +15,7 @@ import { RecipeDetailDialogComponent } from '../recipes/recipe-detail-dialog/rec
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { LoadingSpinnerComponent } from '../../shared/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.component';
+import { forkJoin } from 'rxjs';
 
 export interface DayColumn {
   date: Date;
@@ -23,6 +25,13 @@ export interface DayColumn {
   isToday: boolean;
   lunchMeal?: MealPlan;
   dinnerMeal?: MealPlan;
+}
+
+function formatLocalDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 @Component({
@@ -44,6 +53,7 @@ export class PlanningComponent implements OnInit {
   private planningService = inject(PlanningService);
   private dialog = inject(MatDialog);
   private notificationService = inject(NotificationService);
+  private route = inject(ActivatedRoute);
 
   currentWeekStart!: Date;
   dayColumns: DayColumn[] = [];
@@ -53,6 +63,9 @@ export class PlanningComponent implements OnInit {
   ngOnInit(): void {
     this.initCurrentWeek();
     this.loadWeekPlanning();
+
+    const recipeId = this.route.snapshot.queryParamMap.get('recipeId') || undefined;
+    if (recipeId) this.openPlanDialog(undefined, undefined, recipeId);
   }
 
   private initCurrentWeek(): void {
@@ -85,12 +98,12 @@ export class PlanningComponent implements OnInit {
 
   private buildDayColumns(): void {
     const days: DayColumn[] = [];
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = formatLocalDate(new Date());
 
     for (let i = 0; i < 7; i++) {
       const d = new Date(this.currentWeekStart);
       d.setDate(d.getDate() + i);
-      const dateStr = d.toISOString().split('T')[0];
+      const dateStr = formatLocalDate(d);
 
       const dayName = d.toLocaleDateString('fr-FR', { weekday: 'long' });
       const capitalizedDayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
@@ -130,6 +143,10 @@ export class PlanningComponent implements OnInit {
     this.loadWeekPlanning();
   }
 
+  isPastDate(dateString: string): boolean {
+    return dateString < formatLocalDate(new Date());
+  }
+
   getWeekRangeLabel(): string {
     if (this.dayColumns.length === 0) return '';
     const start = this.dayColumns[0].date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
@@ -137,10 +154,10 @@ export class PlanningComponent implements OnInit {
     return `Semaine du ${start} au ${end}`;
   }
 
-  openPlanDialog(initialDate?: string, initialMealType?: MealType): void {
+  openPlanDialog(initialDate?: string, initialMealType?: MealType, initialRecipeId?: string): void {
     const dialogRef = this.dialog.open(MealPlanDialogComponent, {
       width: '540px',
-      data: { initialDate, initialMealType }
+      data: { initialDate, initialMealType, initialRecipeId }
     });
 
     dialogRef.afterClosed().subscribe((created) => {
@@ -179,7 +196,12 @@ export class PlanningComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
-        this.planningService.deleteMealPlan(plan.id).subscribe({
+        const duplicatePlans = this.mealPlans.filter(candidate =>
+          candidate.date === plan.date && candidate.mealType === plan.mealType
+        );
+        const plansToDelete = duplicatePlans.length > 0 ? duplicatePlans : [plan];
+
+        forkJoin(plansToDelete.map(candidate => this.planningService.deleteMealPlan(candidate.id))).subscribe({
           next: () => {
             this.notificationService.success('Repas retiré du planning');
             this.loadWeekPlanning();
