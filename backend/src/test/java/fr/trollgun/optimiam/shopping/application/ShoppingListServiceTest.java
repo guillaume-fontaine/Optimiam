@@ -30,6 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -148,5 +149,77 @@ class ShoppingListServiceTest {
         assertThat(response.getStatus()).isEqualTo(ShoppingListStatus.COMPLETED);
         verify(stockService).createStockEntry(any());
         verify(domainEventPublisher).publish(any(DomainEvent.class));
+    }
+
+    @Test
+    @DisplayName("Doit conserver les articles non cochés et utiliser la quantité réellement achetée")
+    void shouldKeepUncheckedItemsAndUsePurchasedQuantity() {
+        UUID listId = UUID.randomUUID();
+        ShoppingListItem purchasedItem = ShoppingListItem.builder()
+                .id(UUID.randomUUID())
+                .product(tomate)
+                .missingQuantity(new BigDecimal("0.500"))
+                .purchasedQuantity(new BigDecimal("1.000"))
+                .unit(Unit.KG)
+                .checked(true)
+                .build();
+        ShoppingListItem remainingItem = ShoppingListItem.builder()
+                .id(UUID.randomUUID())
+                .product(tomate)
+                .missingQuantity(new BigDecimal("0.250"))
+                .unit(Unit.KG)
+                .checked(false)
+                .build();
+
+        ShoppingList list = ShoppingList.builder()
+                .id(listId)
+                .name("Courses")
+                .items(List.of(purchasedItem, remainingItem))
+                .status(ShoppingListStatus.ACTIVE)
+                .build();
+
+        when(shoppingListRepository.findById(listId)).thenReturn(Optional.of(list));
+        when(shoppingListRepository.save(any(ShoppingList.class))).thenAnswer(i -> i.getArgument(0));
+
+        ShoppingListResponse response = shoppingListService.validatePurchases(listId);
+
+        assertThat(response.getStatus()).isEqualTo(ShoppingListStatus.ACTIVE);
+        assertThat(response.getItems()).hasSize(1);
+        assertThat(response.getItems().get(0).getId()).isEqualTo(remainingItem.getId());
+        verify(stockService).createStockEntry(argThat(request ->
+                request.getQuantity().compareTo(new BigDecimal("1.000")) == 0));
+    }
+
+    @Test
+    @DisplayName("Doit conserver le reliquat si la quantité achetée est insuffisante")
+    void shouldKeepRemainingQuantityWhenPurchaseIsInsufficient() {
+        UUID listId = UUID.randomUUID();
+        ShoppingListItem item = ShoppingListItem.builder()
+                .id(UUID.randomUUID())
+                .product(tomate)
+                .missingQuantity(new BigDecimal("1.000"))
+                .purchasedQuantity(new BigDecimal("0.400"))
+                .unit(Unit.KG)
+                .checked(true)
+                .build();
+        ShoppingList list = ShoppingList.builder()
+                .id(listId)
+                .name("Courses")
+                .items(new ArrayList<>(List.of(item)))
+                .status(ShoppingListStatus.ACTIVE)
+                .build();
+
+        when(shoppingListRepository.findById(listId)).thenReturn(Optional.of(list));
+        when(shoppingListRepository.save(any(ShoppingList.class))).thenAnswer(i -> i.getArgument(0));
+
+        ShoppingListResponse response = shoppingListService.validatePurchases(listId);
+
+        assertThat(response.getStatus()).isEqualTo(ShoppingListStatus.ACTIVE);
+        assertThat(response.getItems()).hasSize(1);
+        assertThat(response.getItems().get(0).getMissingQuantity())
+                .isEqualByComparingTo(new BigDecimal("0.600"));
+        assertThat(response.getItems().get(0).isChecked()).isFalse();
+        verify(stockService).createStockEntry(argThat(request ->
+                request.getQuantity().compareTo(new BigDecimal("0.400")) == 0));
     }
 }
