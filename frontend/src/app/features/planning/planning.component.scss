@@ -151,10 +151,23 @@
           }
 
           .del-btn {
-            width: 20px;
-            height: 20px;
-            line-height: 20px;
-            mat-icon { font-size: 14px; width: 14px; height: 14px; color: #94a3b8; }
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            padding: 0;
+            margin: -6px -6px -6px 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            mat-icon {
+              margin: 0;
+              font-size: 18px;
+              width: 18px;
+              height: 18px;
+              line-height: 18px;
+              color: #94a3b8;
+            }
           }
         }
 

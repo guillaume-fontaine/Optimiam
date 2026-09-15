@@ -3,6 +3,7 @@ package fr.trollgun.optimiam.planning.api.dto;
 import fr.trollgun.optimiam.planning.domain.MealType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class CreateMealPlanRequest {
 
     @NotNull(message = "La date du repas est obligatoire")
+    @FutureOrPresent(message = "La date du repas doit être aujourd'hui ou ultérieure")
     private LocalDate date;
 
     @NotNull(message = "Le créneau du repas est obligatoire")

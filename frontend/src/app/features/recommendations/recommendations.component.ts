@@ -12,6 +12,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 
 import { DIFFICULTY_OPTIONS, Recipe } from '../../core/models/recipe.model';
 import { Recommendation } from '../../core/models/recommendation.model';
@@ -52,6 +53,7 @@ export class RecommendationsComponent implements OnInit {
   private stockService = inject(StockService);
   private dialog = inject(MatDialog);
   private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   filterForm!: FormGroup;
   recommendations: Recommendation[] = [];
@@ -119,8 +121,7 @@ export class RecommendationsComponent implements OnInit {
     });
   }
 
-  cookRecipe(rec: Recommendation): void {
-    this.notificationService.success(`Plat "${rec.recipe.name}" préparé ! Ingrédients mis à jour.`);
-    this.loadRecommendations();
+  planRecipe(rec: Recommendation): void {
+    this.router.navigate(['/planning'], { queryParams: { recipeId: rec.recipe.id } });
   }
 }

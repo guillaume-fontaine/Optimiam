@@ -16,17 +16,17 @@
 
       <div class="time-buttons-group">
         <span class="btn-group-label">Temps max :</span>
-        <button type="button" mat-stroked-button 
-          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === null" 
+        <button type="button" mat-stroked-button
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === null"
           (click)="onMaxTimeSelect(null)">Tous</button>
-        <button type="button" mat-stroked-button 
-          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 15" 
+        <button type="button" mat-stroked-button
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 15"
           (click)="onMaxTimeSelect(15)">≤ 15 min</button>
-        <button type="button" mat-stroked-button 
-          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 30" 
+        <button type="button" mat-stroked-button
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 30"
           (click)="onMaxTimeSelect(30)">≤ 30 min</button>
-        <button type="button" mat-stroked-button 
-          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 45" 
+        <button type="button" mat-stroked-button
+          [class.active-btn]="filterForm.get('maxTimeMinutes')?.value === 45"
           (click)="onMaxTimeSelect(45)">≤ 45 min</button>
       </div>
 
@@ -43,9 +43,9 @@
       <div class="tags-chips">
         <span class="tags-label">Thématiques :</span>
         <mat-chip-listbox>
-          <mat-chip-option 
-            *ngFor="let tag of popularTags" 
-            [selected]="filterForm.get('tag')?.value === tag" 
+          <mat-chip-option
+            *ngFor="let tag of popularTags"
+            [selected]="filterForm.get('tag')?.value === tag"
             (selectionChange)="onTagToggle(tag)">
             {{ tag }}
           </mat-chip-option>
@@ -64,7 +64,7 @@
   <app-loading-spinner *ngIf="isLoading" message="Calcul des meilleures recettes selon votre stock..."></app-loading-spinner>
 
   <ng-container *ngIf="!isLoading">
-    <app-empty-state 
+    <app-empty-state
       *ngIf="recommendations.length === 0"
       icon="auto_awesome"
       title="Aucune recette recommandée"
@@ -147,9 +147,9 @@
               <mat-icon>visibility</mat-icon>
               Voir la recette
             </button>
-            <button mat-stroked-button color="accent" (click)="cookRecipe(rec)">
-              <mat-icon>restaurant</mat-icon>
-              Cuisiner ce plat
+            <button mat-stroked-button color="accent" (click)="planRecipe(rec)">
+              <mat-icon>calendar_month</mat-icon>
+              Planifier ce plat
             </button>
           </div>
         </div>
