@@ -8,6 +8,7 @@ export interface ShoppingListItem {
   requiredQuantity: number;
   stockQuantity: number;
   missingQuantity: number;
+  purchasedQuantity?: number;
   unit: string;
   unitSymbol?: string;
   checked: boolean;
@@ -45,5 +46,6 @@ export interface AddShoppingItemRequest {
 
 export interface UpdateShoppingItemRequest {
   quantity?: number;
+  purchasedQuantity?: number;
   checked?: boolean;
 }

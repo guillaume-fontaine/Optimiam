@@ -74,7 +74,7 @@
       </div>
 
       <!-- Si Créneau Vide -->
-      <div class="empty-slot" *ngIf="!day.lunchMeal" (click)="openPlanDialog(day.dateString, 'LUNCH')">
+      <div class="empty-slot" *ngIf="!day.lunchMeal && !isPastDate(day.dateString)" (click)="openPlanDialog(day.dateString, 'LUNCH')">
         <mat-icon>add_circle_outline</mat-icon>
         <span>Ajouter déjeuner</span>
       </div>
@@ -115,7 +115,7 @@
       </div>
 
       <!-- Si Créneau Vide -->
-      <div class="empty-slot" *ngIf="!day.dinnerMeal" (click)="openPlanDialog(day.dateString, 'DINNER')">
+      <div class="empty-slot" *ngIf="!day.dinnerMeal && !isPastDate(day.dateString)" (click)="openPlanDialog(day.dateString, 'DINNER')">
         <mat-icon>add_circle_outline</mat-icon>
         <span>Ajouter dîner</span>
       </div>

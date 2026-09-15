@@ -13,5 +13,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class UpdateShoppingItemRequest {
     private BigDecimal quantity;
+    private BigDecimal purchasedQuantity;
     private Boolean checked;
 }
