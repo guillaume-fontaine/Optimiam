@@ -54,7 +54,12 @@ public class ShoppingList {
     }
 
     public void removeItem(ShoppingListItem item) {
-        items.remove(item);
+        try {
+            items.remove(item);
+        } catch (UnsupportedOperationException exception) {
+            items = new ArrayList<>(items);
+            items.remove(item);
+        }
         item.setShoppingList(null);
     }
 }
