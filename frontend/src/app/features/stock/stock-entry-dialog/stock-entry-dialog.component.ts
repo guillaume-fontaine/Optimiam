@@ -177,6 +177,8 @@ export class StockEntryDialogComponent implements OnInit {
     const selected = this.products.find(p => p.id === productId);
     if (selected) {
       this.form.patchValue({ unit: selected.defaultUnit });
+      // Utiliser l'emplacement par défaut du produit, ou FRIDGE si non défini
+      this.form.patchValue({ location: selected.defaultLocation || 'FRIDGE' });
       if (selected.averageShelfLifeDays) {
         const d = new Date();
         d.setDate(d.getDate() + selected.averageShelfLifeDays);

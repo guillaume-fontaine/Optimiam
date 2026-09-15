@@ -1,3 +1,5 @@
+import { Location, LocationOption, LOCATION_OPTIONS } from './stock.model';
+
 export type Unit = 'KG' | 'G' | 'L' | 'ML' | 'PIECE';
 
 export interface UnitOption {
@@ -13,6 +15,10 @@ export const UNIT_OPTIONS: UnitOption[] = [
   { value: 'ML', label: 'Millilitre', symbol: 'ml' },
   { value: 'PIECE', label: 'Pièce', symbol: 'pièce' }
 ];
+
+// Re-export Location types and options from stock.model
+export type { Location, LocationOption };
+export { LOCATION_OPTIONS };
 
 export interface Category {
   id: string;
@@ -45,6 +51,9 @@ export interface Product {
   defaultUnit: Unit;
   unitLabel?: string;
   unitSymbol?: string;
+  defaultLocation?: Location;
+  defaultLocationLabel?: string;
+  defaultLocationIcon?: string;
   category?: Category;
   averageShelfLifeDays?: number;
   imageUrl?: string;
@@ -56,6 +65,7 @@ export interface CreateProductRequest {
   name: string;
   barcode?: string;
   defaultUnit: Unit;
+  defaultLocation?: Location;
   categoryId?: string;
   averageShelfLifeDays?: number;
   imageUrl?: string;
@@ -65,6 +75,7 @@ export interface UpdateProductRequest {
   name: string;
   barcode?: string;
   defaultUnit: Unit;
+  defaultLocation?: Location;
   categoryId?: string;
   averageShelfLifeDays?: number;
   imageUrl?: string;

@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Category, Product, UNIT_OPTIONS } from '../../../core/models/product.model';
+import { Category, Product, UNIT_OPTIONS, LOCATION_OPTIONS } from '../../../core/models/product.model';
 import { CategoryService } from '../../../core/services/category.service';
 import { ProductService } from '../../../core/services/product.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -80,6 +80,20 @@ export interface ProductDialogData {
             <mat-hint>Utilisé pour l'estimation de péremption</mat-hint>
           </mat-form-field>
         </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Emplacement par défaut</mat-label>
+            <mat-select formControlName="defaultLocation">
+              <mat-option [value]="null">-- Aucun (réfrigérateur par défaut) --</mat-option>
+              <mat-option *ngFor="let loc of locationOptions" [value]="loc.value">
+                <mat-icon class="location-icon">{{ loc.icon }}</mat-icon>
+                {{ loc.label }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>L'emplacement de stockage par défaut lors de l'ajout au stock</mat-hint>
+          </mat-form-field>
+        </div>
       </form>
     </mat-dialog-content>
 
@@ -117,6 +131,10 @@ export interface ProductDialogData {
       border-radius: 50%;
       display: inline-block;
     }
+    .location-icon {
+      margin-right: 8px;
+      vertical-align: middle;
+    }
     @media (max-width: 600px) {
       .product-form {
         min-width: 100%;
@@ -139,6 +157,7 @@ export class ProductDialogComponent implements OnInit {
   form!: FormGroup;
   categories: Category[] = [];
   unitOptions = UNIT_OPTIONS;
+  locationOptions = LOCATION_OPTIONS;
   isEditMode = false;
   isSubmitting = false;
 
@@ -155,7 +174,8 @@ export class ProductDialogComponent implements OnInit {
       categoryId: [p?.category?.id || null],
       defaultUnit: [p?.defaultUnit || 'KG', [Validators.required]],
       barcode: [p?.barcode || '', [Validators.maxLength(100)]],
-      averageShelfLifeDays: [p?.averageShelfLifeDays || null, [Validators.min(1)]]
+      averageShelfLifeDays: [p?.averageShelfLifeDays || null, [Validators.min(1)]],
+      defaultLocation: [p?.defaultLocation || null]
     });
   }
 
@@ -176,6 +196,7 @@ export class ProductDialogComponent implements OnInit {
       name: formValue.name,
       barcode: formValue.barcode || null,
       defaultUnit: formValue.defaultUnit,
+      defaultLocation: formValue.defaultLocation || null,
       categoryId: formValue.categoryId || null,
       averageShelfLifeDays: formValue.averageShelfLifeDays || null
     };

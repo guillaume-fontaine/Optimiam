@@ -110,7 +110,7 @@ public class StockService {
         }
 
         Unit unit = request.getUnit() != null ? request.getUnit() : product.getDefaultUnit();
-        Location location = request.getLocation() != null ? request.getLocation() : Location.FRIDGE;
+        Location location = request.getLocation() != null ? request.getLocation() : (product.getDefaultLocation() != null ? product.getDefaultLocation() : Location.FRIDGE);
 
         StockItem stockItem = StockItem.builder()
                 .product(product)
